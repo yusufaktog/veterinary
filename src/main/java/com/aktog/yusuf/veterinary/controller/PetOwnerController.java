@@ -8,35 +8,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/${api.version}/owner")
 public class PetOwnerController {
     @Value("${api.version}")
     private String apiVersion;
-
     private final PetOwnerService petOwnerService;
-
     public PetOwnerController(PetOwnerService petOwnerService) {
         this.petOwnerService = petOwnerService;
     }
+
 
     @GetMapping
     public String getPetOwnerList(Model model) {
         model.addAttribute("owners", petOwnerService.getPetOwnerDtoList());
         return "owners";
-    }
-
-    @GetMapping("/create-owner")
-    public String getCreateOwnerForm(Model model) {
-        model.addAttribute("owner", new CreatePetOwnerRequest());
-        return "create-owner";
-
-    }
-
-    @PostMapping("/create-owner")
-    public String createPetOwner(@ModelAttribute("createPetOwnerRequest") CreatePetOwnerRequest createPetOwnerRequest) {
-        petOwnerService.createPetOwner(createPetOwnerRequest);
-        return "redirect:/" + apiVersion + "/owner";
     }
 
     @GetMapping("/update-owner/{id}")

@@ -15,14 +15,12 @@
     <div class="row text-center">
         <h1 style="margin-bottom:30px;margin-top:10px">Pet Owners</h1>
     </div>
-    <div class="row">
-        <div class="col-lg-3" style="margin-bottom:15px">
-            <a th:href="@{owner/create-owner}" methods="GET" class="btn btn-primary"> Create Owner</a>
-        </div>
-    </div>
+
     <table class="table table-hover table-striped table-bordered ">
         <thead class="table-light">
         <tr class="text-center">
+            <th>id</th>
+
             <th>Name</th>
             <th>Surname</th>
             <th>Phone Number</th>
@@ -32,11 +30,11 @@
         </thead>
         <tbody>
         <tr class="text-center" th:each="owner: ${owners}">
+            <td th:text="${owner.id}"></td>
             <td th:text="${owner.name}"></td>
             <td th:text="${owner.surname}"></td>
             <td th:text="${owner.phoneNumber}"></td>
             <td th:text="${owner.email}"></td>
-
 
             <td>
                 <a class="btn btn-primary" th:href="@{owner/update-owner/{id} (id=${owner.id})}">Edit</a>

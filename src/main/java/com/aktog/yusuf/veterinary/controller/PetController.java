@@ -36,7 +36,7 @@ public class PetController {
 
     @PostMapping("/create-pet")
     public String createPet(@ModelAttribute("createPetRequest") CreatePetRequest createPetRequest){
-        petService.createPet("06e4c108-bf6c-4b21-a8ea-eb342c158821",createPetRequest);
+        petService.createPet("86911b7d-2a26-46e4-bc28-4342b6cd8cbd",createPetRequest);
         return "redirect:/" + apiVersion + "/pet";
     }
 
@@ -54,7 +54,7 @@ public class PetController {
 
     }
 
-    @GetMapping("/delete-owner/{id}")
+    @GetMapping("/delete-pet/{id}")
     public String deletePet(@PathVariable String id){
         petService.deletePetById(id);
         return "redirect:/" + apiVersion + "/pet";

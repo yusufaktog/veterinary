@@ -23,38 +23,38 @@
                         <label style="margin-bottom:10px">Name</label>
                         <input type="text" class="form-control" name="name" th:field="${pet.name}"
                                placeholder="Name"
-                               style="margin-bottom:15px"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
                     <div class="form-group">
                         <label style="margin-bottom:10px">Birth Date</label>
                         <input type="text" class="form-control" name="birthDate" th:field="${pet.birthDate}"
                                placeholder="Birth Date"
-                               style="margin-bottom:15px"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/ >
                     </div>
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Type</label>
                         <input type="text" class="form-control" name="type" th:field="${pet.type}"
                                placeholder="Type"
-                               style="margin-bottom:15px"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Genus</label>
                         <input type="text" class="form-control" name="genus"
                                th:field="${pet.genus}"
-                               placeholder="Genus" style="margin-bottom:15px"/>
+                               placeholder="Genus" style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Description</label>
                         <input type="text" class="form-control" name="description"
                                th:field="${pet.description}"
-                               placeholder="Description" style="margin-bottom:15px"/>
+                               placeholder="Description" style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
 
 
-                    <div class="box-footer" >
+                    <div class="box-footer">
                         <button type="submit" class="btn btn-success">Submit</button>
                     </div>
                 </form>

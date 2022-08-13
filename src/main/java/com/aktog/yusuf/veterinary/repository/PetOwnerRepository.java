@@ -11,5 +11,6 @@ public interface PetOwnerRepository extends JpaRepository<PetOwner, String> {
 
     Optional<PetOwner> findByEmail(String email);
 
-    Optional<PetOwner> findByPassword(String password);
+    Optional<PetOwner> findByPhoneNumber(String phoneNumber);
+
 }
