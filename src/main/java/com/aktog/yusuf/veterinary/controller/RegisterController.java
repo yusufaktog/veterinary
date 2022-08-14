@@ -3,6 +3,7 @@ package com.aktog.yusuf.veterinary.controller;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.service.PetOwnerService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/${api.version}")
+@PreAuthorize("isAnonymous()")
 public class RegisterController {
     private final PetOwnerService petOwnerService;
     @Value("${api.version}")

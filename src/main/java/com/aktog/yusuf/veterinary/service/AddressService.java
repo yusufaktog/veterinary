@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AddressService {
@@ -69,12 +70,21 @@ public class AddressService {
         return addressDtoConverter.convert(addressRepository.save(updatedAddress));
     }
 
-    public List<Address> getAddressList(){
+    public List<Address> getAddressList() {
         return addressRepository.findAll();
     }
 
-    public List<AddressDto> getAddressDtoList(){
+    public List<AddressDto> getAddressDtoList() {
         return addressDtoConverter.convert(getAddressList());
     }
 
+    public List<AddressDto> doFilter(String query) {
+        return getAddressDtoList()
+                .stream()
+                .filter(addressDto -> addressDto
+                        .toString()
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 }

@@ -2,6 +2,7 @@ package com.aktog.yusuf.veterinary.service;
 
 
 import com.aktog.yusuf.veterinary.dto.PetDto;
+import com.aktog.yusuf.veterinary.dto.PetOwnerDto;
 import com.aktog.yusuf.veterinary.dto.converter.PetDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetRequest;
@@ -11,8 +12,10 @@ import com.aktog.yusuf.veterinary.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.xml.bind.SchemaOutputResolver;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PetService {
@@ -81,4 +84,14 @@ public class PetService {
         return petDtoConverter.convert(getPetList());
     }
 
+    public List<PetDto> doFilter(String query) {
+        return getPetDtoList()
+                .stream()
+                .filter(petDto -> petDto
+                        .toString()
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+
+    }
 }

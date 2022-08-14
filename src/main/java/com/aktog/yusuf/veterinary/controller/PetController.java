@@ -5,6 +5,7 @@ import com.aktog.yusuf.veterinary.dto.request.create.CreatePetRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetRequest;
 import com.aktog.yusuf.veterinary.service.PetService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,12 @@ public class PetController {
     @GetMapping
     public String getPetList(Model model) {
         model.addAttribute("pets", petService.getPetDtoList());
+        return "pets";
+    }
+
+    @GetMapping("/search")
+    public String filterPets(Model model,@RequestParam String query){
+        model.addAttribute("pets",petService.doFilter(query));
         return "pets";
     }
 
@@ -55,6 +62,7 @@ public class PetController {
     }
 
     @GetMapping("/delete-pet/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String deletePet(@PathVariable String id){
         petService.deletePetById(id);
         return "redirect:/" + apiVersion + "/pet";

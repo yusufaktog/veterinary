@@ -6,7 +6,6 @@ import javax.persistence.*
 data class Authority @JvmOverloads constructor(
     @Id
     @Column(name = "authority_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id:Int? = 0,
     val name:String
 )

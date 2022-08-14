@@ -27,4 +27,10 @@ public class LoginController {
     public String login(@ModelAttribute("createLoginRequest") CreateLoginRequest createLoginRequest) {
         return "redirect:/" + apiVersion + "/owner";
     }
+
+    @PostMapping("/logout")
+    public String logout() {
+        return "redirect:/" + apiVersion;
+    }
+
 }

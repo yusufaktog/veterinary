@@ -1,5 +1,6 @@
 package com.aktog.yusuf.veterinary.service;
 
+import com.aktog.yusuf.veterinary.dto.PetDto;
 import com.aktog.yusuf.veterinary.dto.PetOwnerDto;
 import com.aktog.yusuf.veterinary.dto.converter.PetOwnerDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
@@ -46,19 +47,6 @@ public class PetOwnerService {
     public PetOwnerDto getPetOwnerById(String petOwnerId) {
         return petOwnerDtoConverter.convert(findByPetOwnerId(petOwnerId));
     }
-
-    // search by name or both with name and surname
-    public List<PetOwnerDto> filterByName(String name) {
-        return getPetOwnerDtoList()
-                .stream()
-                .filter(petOwnerDto -> petOwnerDto
-                        .getName()
-                        .concat(" " + petOwnerDto.getSurname())
-                        .toUpperCase()
-                        .contains(name.toUpperCase()))
-                .collect(Collectors.toList());
-    }
-
     public Optional<PetOwner> findByEmail(String email) {
         return petOwnerRepository.findByEmail(email);
     }
@@ -72,8 +60,8 @@ public class PetOwnerService {
             throw new PhoneNumberAlreadyExistsException("Given Phone Number is already being used by another user");
 
         //By default, add normal user role to every owner created
-        Authority user = new Authority("ROLE_USER");
-        authorityRepository.save(user);
+        Authority authority = authorityRepository.findByName("ROLE_ADMIN")
+                .orElse(authorityRepository.save(new Authority("ROLE_ADMIN")));
 
         PetOwner petOwner = new PetOwner(
                 request.getName(),
@@ -81,7 +69,7 @@ public class PetOwnerService {
                 request.getPhoneNumber(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                Set.of(authorityRepository.save(user))
+                Set.of(authority)
         );
 
         return petOwnerDtoConverter.convert(petOwnerRepository.save(petOwner));
@@ -116,6 +104,16 @@ public class PetOwnerService {
 
     public List<PetOwner> getPetOwnerList() {
         return petOwnerRepository.findAll();
+    }
+
+    public List<PetOwnerDto> doFilter(String query) {
+        return getPetOwnerDtoList()
+                .stream()
+                .filter(petOwnerDto -> petOwnerDto
+                        .toString()
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
 }

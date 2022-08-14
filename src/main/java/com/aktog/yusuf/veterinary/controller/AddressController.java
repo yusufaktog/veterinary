@@ -5,6 +5,7 @@ import com.aktog.yusuf.veterinary.dto.request.create.CreateAddressRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdateAddressRequest;
 import com.aktog.yusuf.veterinary.service.AddressService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,15 @@ public class AddressController {
         this.addressService = addressService;
     }
 
-
     @GetMapping
     public String getAddressList(Model model) {
         model.addAttribute("addresses", addressService.getAddressDtoList());
+        return "addresses";
+    }
+
+    @GetMapping("/search")
+    public String filterAddresses(Model model, @RequestParam String query){
+        model.addAttribute("addresses",addressService.doFilter(query));
         return "addresses";
     }
 
@@ -61,5 +67,7 @@ public class AddressController {
         addressService.deleteAddressById(id);
         return "redirect:/" + apiVersion + "/address";
     }
+
+
 
 }

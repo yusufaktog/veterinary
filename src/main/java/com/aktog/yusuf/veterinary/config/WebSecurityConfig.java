@@ -28,6 +28,8 @@ public class WebSecurityConfig   {
         return new BCryptPasswordEncoder();
     }
 
+
+
     public WebSecurityConfig(Environment env) {
         this.env = env;
 
@@ -44,8 +46,6 @@ public class WebSecurityConfig   {
                 .authorizeRequests()
                 .antMatchers(registerEndPoint)
                 .permitAll()
-                .antMatchers(HttpMethod.GET, apiVersion + "/pet/*", apiVersion + "/address/*")
-                .permitAll()
                 .anyRequest()
                 .authenticated();
 
@@ -56,7 +56,7 @@ public class WebSecurityConfig   {
                 .loginProcessingUrl(loginEndPoint)
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl(apiVersion + "/owner", true)
                 .failureUrl(apiVersion + "/login?error")
                 .permitAll()
                 .and()
