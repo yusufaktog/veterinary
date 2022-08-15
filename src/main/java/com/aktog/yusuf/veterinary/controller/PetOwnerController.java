@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @Controller
 @RequestMapping("/${api.version}/owner")
 public class PetOwnerController {
@@ -22,13 +20,11 @@ public class PetOwnerController {
         this.petOwnerService = petOwnerService;
     }
 
-
     @GetMapping("/search")
     public String filterPetOwners(Model model, @RequestParam String query) {
         model.addAttribute("owners", petOwnerService.doFilter(query));
         return "owners";
     }
-
 
     @GetMapping
     public String getPetOwnerList(Model model) {

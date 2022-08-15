@@ -12,9 +12,9 @@
 <body>
 
 <div class="container">
-    <div class="row">
+    <div class="row" style="align-items:center; justify-content: center" >
         <div class="col-md-6 col-md-offset-3">
-            <h1> Login Page</h1>
+            <h1  style="align-items:center; justify-content: center; margin-top:10%"> Login Page</h1>
             <form th:action="@{login}" method="POST">
                 <div th:if="${param.error}">
                     <div class="alert alert-danger">Invalid username or password</div>
@@ -49,8 +49,8 @@
                 </div>
             </form>
             <div class="form-group">
-                <span>New User ?
-                    <a th:href="@{register}">Register Here</a>
+                <span style="font-style:italic">New User ?
+                    <a th:href="@{register}" style="margin-top:2%;font-weight:bold;font-size:18px">Register Here</a>
                 </span>
             </div>
 

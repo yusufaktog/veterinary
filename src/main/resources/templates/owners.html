@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -57,14 +56,13 @@
                 <form class="navbar-form"
                       th:action="@{logout}"
                       method="POST">
-                    <button  class="btn btn-danger" type="submit">Logout</button>
+                    <button class="btn btn-danger" type="submit">Logout</button>
                 </form>
             </div>
 
         </div>
     </div>
 </nav>
-
 
 <div class="container">
     <div class="row text-center">
@@ -74,10 +72,9 @@
     <table class="table table-hover table-striped table-bordered ">
         <thead class="table-light">
         <tr class="text-center">
-            <th>id</th>
-
             <th>Name</th>
             <th>Surname</th>
+            <th>Address</th>
             <th>Phone Number</th>
             <th>Email</th>
             <th>Actions</th>
@@ -85,9 +82,9 @@
         </thead>
         <tbody>
         <tr class="text-center" th:each="owner: ${owners}">
-            <td th:text="${owner.id}"></td>
             <td th:text="${owner.name}"></td>
             <td th:text="${owner.surname}"></td>
+            <td th:text="${owner.addressIds}"></td>
             <td th:text="${owner.phoneNumber}"></td>
             <td th:text="${owner.email}"></td>
 
@@ -97,6 +94,7 @@
                    style="margin-right:15px">Edit</a>
                 <a class="btn btn-danger"
                    th:href="@{/{version}/owner/delete-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                   th:if="${#authentication.getName() != owner.email}"
                    style="margin-left:15px">Delete</a>
             </td>
         </tr>

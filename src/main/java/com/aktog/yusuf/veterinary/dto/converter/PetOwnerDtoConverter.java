@@ -33,11 +33,10 @@ public class PetOwnerDtoConverter {
                 Optional.ofNullable(from.getAddresses())
                         .orElse(new HashSet<>())
                         .stream()
-                        .map(Address::getId)
+                        .map(Address::toString)
                         .collect(Collectors.toSet()),
 
-                Optional.ofNullable(from.getAuthorities())
-                        .orElse(new HashSet<>())
+                from.getAuthorities()
                         .stream()
                         .map(Authority::getId)
                         .collect(Collectors.toSet())

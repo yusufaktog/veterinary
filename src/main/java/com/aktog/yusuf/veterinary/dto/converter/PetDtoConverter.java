@@ -22,8 +22,8 @@ public class PetDtoConverter {
                 from.getType(),
                 from.getGenus(),
                 from.getDescription(),
+                from.getOwner().getName().concat(" " + from.getOwner().getSurname()),
                 Optional.ofNullable(from.getOwner().getId()).orElse("")
-
         );
     }
 

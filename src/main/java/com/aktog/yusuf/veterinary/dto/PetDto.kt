@@ -10,11 +10,12 @@ data class PetDto @JvmOverloads constructor(
     val type: String,
     val genus: String,
     val description: String,
+    val ownerName: String? = "None",
 
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     val ownerId: String? = ""
 ) {
     override fun toString(): String {
-        return "$name  $age  $type  $genus  $description"
+        return "$name  $age  $type  $genus  $description $ownerName"
     }
 }

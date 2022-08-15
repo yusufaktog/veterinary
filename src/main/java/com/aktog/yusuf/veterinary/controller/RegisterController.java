@@ -15,7 +15,6 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/${api.version}")
-@PreAuthorize("isAnonymous()")
 public class RegisterController {
     private final PetOwnerService petOwnerService;
     @Value("${api.version}")
@@ -28,8 +27,7 @@ public class RegisterController {
     @GetMapping("/register")
     public String getCreateOwnerForm(Model model) {
         model.addAttribute("owner", new CreatePetOwnerRequest());
-        return "create-owner";
-
+        return "register";
     }
 
     @PostMapping("/register")

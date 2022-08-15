@@ -16,7 +16,7 @@
         <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
             <h1 class=" text-center">Create Pet</h1>
             <div class="card-body">
-                <form action="#" th:action="@{create-pet}"
+                <form action="#" th:action="@{create-pet/{id} (id = ${ownerId})}"
                       th:object="${pet}" method="POST">
 
                     <div class="form-group">
@@ -29,7 +29,7 @@
                         <label style="margin-bottom:10px">Birth Date</label>
                         <input type="text" class="form-control" name="birthDate" th:field="${pet.birthDate}"
                                placeholder="Birth Date"
-                               style="margin-bottom:15px" required autofocus="autofocus"/ >
+                               style="margin-bottom:15px" required autofocus="autofocus" />
                     </div>
 
                     <div class="form-group">

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:th="http://www.w3.org/1999/xhtml">
+>
 
 <head>
     <meta charset="UTF-8">
@@ -63,6 +63,13 @@
                     <div class="box-footer">
                         <button type="submit" class="btn btn-success">Submit</button>
                     </div>
+
+                    <div class="form-group" style="margin-top:1%;font-style:italic">
+                        <span> Already Registered ?
+                            <a th:href="@{login}" style="font-size:18px;font-weight:bold"> Login </a>
+                        </span>
+                    </div>
+
                 </form>
 
             </div>

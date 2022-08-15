@@ -27,11 +27,12 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<PetOwner> optionalPetOwner = petOwnerService.findByEmail(email);
+
         if (optionalPetOwner.isEmpty()) {
             throw new EntityNotFoundException("Entity with email: " + email + " could not found!");
         }
-        PetOwner petOwner = optionalPetOwner.get();
 
+        PetOwner petOwner = optionalPetOwner.get();
 
         List<GrantedAuthority> grantedAuthorities = petOwner.getAuthorities()
                 .stream()
