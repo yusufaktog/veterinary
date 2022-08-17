@@ -38,7 +38,7 @@ public class PetOwnerDtoConverter {
 
                 from.getAuthorities()
                         .stream()
-                        .map(Authority::getId)
+                        .map(Authority::getName)
                         .collect(Collectors.toSet())
 
         );

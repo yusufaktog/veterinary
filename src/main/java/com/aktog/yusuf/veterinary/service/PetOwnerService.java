@@ -6,12 +6,14 @@ import com.aktog.yusuf.veterinary.dto.converter.PetOwnerDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Authority;
+import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.exception.EmailAlreadyExistsException;
 import com.aktog.yusuf.veterinary.exception.PhoneNumberAlreadyExistsException;
 import com.aktog.yusuf.veterinary.repository.AuthorityRepository;
 import com.aktog.yusuf.veterinary.repository.PetOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,21 +49,28 @@ public class PetOwnerService {
     public PetOwnerDto getPetOwnerById(String petOwnerId) {
         return petOwnerDtoConverter.convert(findByPetOwnerId(petOwnerId));
     }
+
     public Optional<PetOwner> findByEmail(String email) {
         return petOwnerRepository.findByEmail(email);
     }
 
+    public Optional<PetOwner> findByPhoneNumber(String phoneNumber) {
+        return petOwnerRepository.findByPhoneNumber(phoneNumber);
+    }
+
     public PetOwnerDto createPetOwner(CreatePetOwnerRequest request) {
 
-        if (petOwnerRepository.findByEmail(request.getEmail()).isPresent())
+        if (petOwnerRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Given Email is already being used by another user");
+        }
 
-        if (petOwnerRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent())
+        if (petOwnerRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new PhoneNumberAlreadyExistsException("Given Phone Number is already being used by another user");
+        }
 
         //By default, add normal user role to every owner created
-        Authority authority = authorityRepository.findByName("ROLE_ADMIN")
-                .orElse(authorityRepository.save(new Authority("ROLE_ADMIN")));
+        Authority authority = authorityRepository.findByName("ROLE_USER")
+                .orElse(authorityRepository.save(new Authority("ROLE_USER")));
 
         PetOwner petOwner = new PetOwner(
                 request.getName(),
@@ -114,6 +123,43 @@ public class PetOwnerService {
                         .toLowerCase()
                         .contains(query.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    public void assignAuthorityToOwner(String ownerId, Authority authority) {
+
+        PetOwner owner = findByPetOwnerId(ownerId);
+        Set<Authority> authorities = owner.getAuthorities();
+
+        if (authorities.stream().map(Authority::getName).collect(Collectors.toList()).contains(authority.getName()))
+            return;
+
+        if (authorityRepository.findByName(authority.getName()).isEmpty()) {
+            authorityRepository.save(authority);
+        }
+
+
+        authorities.add(authorityRepository.findByName(authority.getName()).get());
+
+        PetOwner updatedOwner = new PetOwner(
+                ownerId,
+                owner.getName(),
+                owner.getSurname(),
+                owner.getPhoneNumber(),
+                owner.getEmail(),
+                owner.getPassword(),
+                authorities,
+                owner.getPets(),
+                owner.getAddresses()
+        );
+
+        petOwnerRepository.save(updatedOwner);
+
+    }
+
+    public void removeAuthorityFromOwner(String ownerId, Authority authority) {
+        PetOwner owner = findByPetOwnerId(ownerId);
+
+
     }
 
 }

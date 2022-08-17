@@ -2,12 +2,17 @@ package com.aktog.yusuf.veterinary.controller;
 
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
+import com.aktog.yusuf.veterinary.entity.Authority;
 import com.aktog.yusuf.veterinary.service.PetOwnerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.websocket.OnError;
+import java.util.Collection;
 
 @Controller
 @RequestMapping("/${api.version}/owner")
@@ -38,9 +43,9 @@ public class PetOwnerController {
         return "update-owner";
     }
 
-    @PostMapping("/update-owner/{id}")
+    @PutMapping("/update-owner/{id}")
     public String updateOwner(@PathVariable String id,
-                              @ModelAttribute("updatePetOwnerRequest") UpdatePetOwnerRequest updatePetOwnerRequest) {
+                              @ModelAttribute @Valid UpdatePetOwnerRequest updatePetOwnerRequest) {
         petOwnerService.updatePetOwner(id, updatePetOwnerRequest);
         return "redirect:/" + apiVersion + "/owner";
     }
@@ -50,5 +55,19 @@ public class PetOwnerController {
     public String deleteOwner(@PathVariable String id) {
         petOwnerService.deletePetOwner(id);
         return "redirect:/" + apiVersion + "/owner";
+    }
+
+    @GetMapping("/assign-authority/{ownerId}")
+    public String getAssignAuthorityPage(@PathVariable String ownerId, Model model) {
+        model.addAttribute("authority", new Authority());
+        model.addAttribute("ownerId", ownerId);
+        return "assign-authority";
+    }
+    @PostMapping("/assign-authority/{ownerId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String assignAuthority(@PathVariable String ownerId, @ModelAttribute @Valid Authority authority) {
+        petOwnerService.assignAuthorityToOwner(ownerId, authority);
+        return "redirect:/" + apiVersion + "/owner";
+
     }
 }

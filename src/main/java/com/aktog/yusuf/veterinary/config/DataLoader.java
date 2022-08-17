@@ -1,52 +1,40 @@
 package com.aktog.yusuf.veterinary.config;
 
-import com.aktog.yusuf.veterinary.entity.Address;
-import com.aktog.yusuf.veterinary.repository.AddressRepository;
-import com.aktog.yusuf.veterinary.repository.AuthorityRepository;
-import com.aktog.yusuf.veterinary.repository.PetOwnerRepository;
-import com.aktog.yusuf.veterinary.repository.PetRepository;
+import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
+import com.aktog.yusuf.veterinary.entity.Authority;
+import com.aktog.yusuf.veterinary.entity.PetOwner;
+import com.aktog.yusuf.veterinary.service.PetOwnerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class DataLoader implements CommandLineRunner {
-    private final AddressRepository addressRepository;
-    private final PetRepository petRepository;
-    private final PetOwnerRepository petOwnerRepository;
-    private final AuthorityRepository authorityRepository;
+    private final PetOwnerService petOwnerService;
 
-    public DataLoader(AddressRepository addressRepository,
-                      PetRepository petRepository,
-                      PetOwnerRepository petOwnerRepository,
-                      AuthorityRepository authorityRepository) {
-        this.addressRepository = addressRepository;
-        this.petRepository = petRepository;
-        this.petOwnerRepository = petOwnerRepository;
-        this.authorityRepository = authorityRepository;
+    public DataLoader(PetOwnerService petOwnerService) {
+        this.petOwnerService = petOwnerService;
     }
+
 
     @Override
     public void run(String... args) {
-//        System.out.println(petOwnerRepository.findByEmail("yusufaktok@gmail.com").isPresent());
+        // By Default an admin account will be automatically generated,
+        // This account can be used to assign authorities to other users.
+        String email = "admin@gmail.com";
 
-/*        Address address = new Address(
-                "Turkey",
-                "Izmir",
-                "Kadriye",
-                150,
-                15,
-                35270
-        );
-        addressRepository.save(address);
-        address = new Address(
-                "Turkey",
-                "Istanbul",
-                "Sariyer",
-                350,
-                35,
-                55670
-        );
-        addressRepository.save(address);*/
+        if (petOwnerService.findByEmail(email).isEmpty()) {
+            System.out.println("did not find any admin accounts so createing a new one");
+            CreatePetOwnerRequest admin = new CreatePetOwnerRequest("ADMIN",
+                    "ADMIN",
+                    "0000000000",
+                    email,
+                    "admin123",
+                    Set.of(new Authority("ROLE_ADMIN")));
+            petOwnerService.createPetOwner(admin);
+        }
+
 
     }
 }

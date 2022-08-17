@@ -17,6 +17,7 @@
             <h1 class=" text-center">Create Pet</h1>
             <div class="card-body">
                 <form action="#" th:action="@{create-pet/{id} (id = ${ownerId})}"
+
                       th:object="${pet}" method="POST">
 
                     <div class="form-group">
@@ -30,6 +31,7 @@
                         <input type="text" class="form-control" name="birthDate" th:field="${pet.birthDate}"
                                placeholder="Birth Date"
                                style="margin-bottom:15px" required autofocus="autofocus" />
+                        <div class="alert alert-warning" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></div>
                     </div>
 
                     <div class="form-group">
@@ -50,9 +52,8 @@
                         <label style="margin-bottom:10px">Description</label>
                         <input type="text" class="form-control" name="description"
                                th:field="${pet.description}"
-                               placeholder="Description" style="margin-bottom:15px" required autofocus="autofocus"/>
+                               placeholder="Description" style="margin-bottom:15px"  required autofocus="autofocus"/>
                     </div>
-
 
                     <div class="box-footer">
                         <button type="submit" class="btn btn-success">Submit</button>

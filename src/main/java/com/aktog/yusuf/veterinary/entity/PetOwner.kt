@@ -1,7 +1,10 @@
 package com.aktog.yusuf.veterinary.entity
 
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.validator.constraints.Length
 import javax.persistence.*
+import javax.validation.constraints.Size
+import kotlin.math.min
 
 @Entity
 data class PetOwner @JvmOverloads constructor(
@@ -29,10 +32,10 @@ data class PetOwner @JvmOverloads constructor(
     )
     val authorities: Set<Authority>,
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val pets: Set<Pet>? = HashSet(),
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
         name = "owner_addresses",
         joinColumns = [JoinColumn(name = "owner_id", referencedColumnName = "owner_id")],
@@ -69,7 +72,7 @@ data class PetOwner @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "PetOwner(id=$id, name='$name', surname='$surname', phoneNumber='$phoneNumber', email='$email', password='$password')"
+        return "$name  $surname  $phoneNumber  $email"
     }
 
 }

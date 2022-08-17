@@ -17,7 +17,7 @@
             <h1 class=" text-center">Update Address</h1>
             <div class="card-body">
                 <form action="#" th:action="@{{id} (id=${address.id})  }"
-                      th:object="${address}" method="POST">
+                      th:object="${address}" th:method="PUT">
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Country</label>

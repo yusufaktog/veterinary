@@ -45,7 +45,7 @@ public class PetService {
     public String deletePetById(String petId) {
         findByPetId(petId);
         petRepository.deleteById(petId);
-        return "Address id  : " + petId + " deleted";
+        return "Pet id  : " + petId + " deleted";
     }
 
     public PetDto createPet(String ownerId, CreatePetRequest request) {

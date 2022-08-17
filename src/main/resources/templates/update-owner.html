@@ -17,7 +17,7 @@
       <h1 class=" text-center">Update Pet Owner</h1>
       <div class="card-body">
         <form action="#" th:action="@{{id} (id=${owner.id})}"
-              th:object="${owner}" method="POST">
+              th:object="${owner}" th:method="PUT">
 
           <div class="form-group">
             <label style="margin-bottom:10px">Name</label>

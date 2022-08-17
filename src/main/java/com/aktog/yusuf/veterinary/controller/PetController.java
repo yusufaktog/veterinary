@@ -12,7 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/${api.version}/pet")
@@ -46,14 +49,16 @@ public class PetController {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("pet", new CreatePetRequest());
         String id = petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
-        System.out.println("heyyo  "+id);
         model.addAttribute("ownerId", id);
         return "create-pet";
     }
 
     @PostMapping("/create-pet/{ownerId}")
-    public String createPet(@PathVariable String ownerId, @ModelAttribute("createPetRequest") CreatePetRequest createPetRequest) {
+    public String createPet(@PathVariable String ownerId,
+                            @Valid @ModelAttribute CreatePetRequest createPetRequest,
+                            BindingResult result) {
         petService.createPet(ownerId, createPetRequest);
+
         return "redirect:/" + apiVersion + "/pet";
     }
 
@@ -63,9 +68,9 @@ public class PetController {
         return "update-pet";
     }
 
-    @PostMapping("/update-pet/{id}")
+    @PutMapping("/update-pet/{id}")
     public String updatePet(@PathVariable String id,
-                            @ModelAttribute("updatePetRequest") UpdatePetRequest updatePetRequest) {
+                            @ModelAttribute @Valid UpdatePetRequest updatePetRequest) {
         petService.updatePet(id, updatePetRequest);
         return "redirect:/" + apiVersion + "/pet";
 

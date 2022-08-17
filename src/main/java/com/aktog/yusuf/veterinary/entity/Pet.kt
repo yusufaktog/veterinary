@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Date
 import javax.persistence.*
+import javax.validation.constraints.Past
 
 @Entity
 data class Pet @JvmOverloads constructor(
@@ -13,15 +14,15 @@ data class Pet @JvmOverloads constructor(
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     val id: String? = "",
-    val name:String,
+    val name: String,
     val birthDate: LocalDate,
-    val type:String,
-    val genus:String,
-    val description:String,
+    val type: String,
+    val genus: String,
+    val description: String,
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
-    val owner:PetOwner,
+    val owner: PetOwner,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

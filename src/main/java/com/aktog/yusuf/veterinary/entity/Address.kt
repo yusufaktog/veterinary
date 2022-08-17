@@ -1,10 +1,7 @@
 package com.aktog.yusuf.veterinary.entity
 
 import org.hibernate.annotations.GenericGenerator
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 data class Address @JvmOverloads constructor(
@@ -13,12 +10,13 @@ data class Address @JvmOverloads constructor(
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     val id: String? = "",
-    val country:String,
-    val city:String,
-    val street:String,
-    val buildingNumber:Int,
-    val apartmentNumber:Int,
-    val zipCode:Int,
+    val country: String,
+    val city: String,
+    val street: String,
+    val buildingNumber: Int,
+    val apartmentNumber: Int,
+    val zipCode: Int,
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -49,6 +47,6 @@ data class Address @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "Address(id=$id, country='$country', city='$city', street='$street', buildingNumber=$buildingNumber, apartmentNumber=$apartmentNumber, zipCode=$zipCode)"
+        return "$country $city $street $buildingNumber $apartmentNumber $zipCode"
     }
 }

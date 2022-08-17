@@ -5,7 +5,7 @@ import javax.validation.constraints.Positive
 
 data class CreateAddressRequest (
 
-    @field:NotBlank
+    @field:NotBlank(message = "Field 'Country' can not be empty")
     val country: String,
 
     @field:NotBlank

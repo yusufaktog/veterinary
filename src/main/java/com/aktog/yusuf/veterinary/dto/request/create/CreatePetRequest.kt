@@ -2,6 +2,7 @@ package com.aktog.yusuf.veterinary.dto.request.create
 
 import java.time.LocalDate
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Past
 import javax.validation.constraints.Positive
 
 data class CreatePetRequest (
@@ -14,7 +15,7 @@ data class CreatePetRequest (
     @field:NotBlank
     val name: String,
 
-    @field:Positive
+    @field:Past
     val birthDate: LocalDate,
 
     @field:NotBlank

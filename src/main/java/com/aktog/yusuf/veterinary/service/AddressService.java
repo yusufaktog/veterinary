@@ -5,13 +5,17 @@ import com.aktog.yusuf.veterinary.dto.AddressDto;
 import com.aktog.yusuf.veterinary.dto.converter.AddressDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreateAddressRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdateAddressRequest;
+import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Address;
+import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,10 +23,14 @@ public class AddressService {
 
     private final AddressDtoConverter addressDtoConverter;
     private final AddressRepository addressRepository;
+    private final PetOwnerService petOwnerService;
 
-    public AddressService(AddressDtoConverter addressDtoConverter, AddressRepository addressRepository) {
+    public AddressService(AddressDtoConverter addressDtoConverter,
+                          AddressRepository addressRepository,
+                          PetOwnerService petOwnerService) {
         this.addressDtoConverter = addressDtoConverter;
         this.addressRepository = addressRepository;
+        this.petOwnerService = petOwnerService;
     }
 
     public Address findByAddressId(String addressId) {
@@ -40,7 +48,8 @@ public class AddressService {
         return "Address id : " + addressId + " deleted";
     }
 
-    public AddressDto createAddress(CreateAddressRequest request) {
+    public AddressDto createAddress(CreateAddressRequest request, String ownerId) {
+        PetOwner petOwner = petOwnerService.findByPetOwnerId(ownerId);
 
         Address address = new Address(
                 request.getCountry(),
@@ -51,8 +60,24 @@ public class AddressService {
                 request.getZipCode()
         );
 
-        return addressDtoConverter.convert(addressRepository.save(address));
+        Set<Address> addresses = Optional.ofNullable(petOwner.getAddresses()).orElse(new HashSet<>());
+        Address savedAddress = addressRepository.save(address);
+        addresses.add(savedAddress);
 
+        UpdatePetOwnerRequest updatePetOwnerRequest = new UpdatePetOwnerRequest(
+                petOwner.getName(),
+                petOwner.getSurname(),
+                petOwner.getPhoneNumber(),
+                petOwner.getEmail(),
+                petOwner.getPassword(),
+                petOwner.getPets(),
+                addresses,
+                petOwner.getAuthorities()
+                );
+
+        petOwnerService.updatePetOwner(ownerId, updatePetOwnerRequest);
+
+        return addressDtoConverter.convert(savedAddress);
     }
 
     public AddressDto updateAddress(String addressId, UpdateAddressRequest request) {

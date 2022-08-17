@@ -16,53 +16,56 @@
         <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
             <h1 class=" text-center">Create Address</h1>
             <div class="card-body">
-                <form action="#" th:action="@{create-address}"
+                <form action="#" th:action="@{create-address/{id} (id=${ownerId})}"
                       th:object="${address}" method="POST">
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Country</label>
                         <input type="text" class="form-control" name="country" th:field="${address.country}"
                                placeholder="Country"
-                               style="margin-bottom:15px" required autofocus = "autofocus"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
                     <div class="form-group">
                         <label style="margin-bottom:10px">City</label>
                         <input type="text" class="form-control" name="city" th:field="${address.city}"
                                placeholder="City"
-                               style="margin-bottom:15px" required autofocus = "autofocus"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Street</label>
                         <input type="text" class="form-control" name="street" th:field="${address.street}"
                                placeholder="Street"
-                               style="margin-bottom:15px" required autofocus = "autofocus"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Building Number</label>
-                        <input type="text" class="form-control" name="buildingNumber"
+                        <input type="number" class="form-control" name="buildingNumber"
                                th:field="${address.buildingNumber}"
-                               placeholder="Building Number" style="margin-bottom:15px" required autofocus = "autofocus"/>
-                    </div>
+                               placeholder="Building Number" style="margin-bottom:15px" required autofocus="autofocus"/>
 
+                    </div>
                     <div class="form-group">
                         <label style="margin-bottom:10px">Apartment Number</label>
-                        <input type="text" class="form-control" name="apartmentNumber"
+                        <input type="number" class="form-control" name="apartmentNumber"
                                th:field="${address.apartmentNumber}"
-                               placeholder="Apartment Number" style="margin-bottom:15px" required autofocus = "autofocus"/>
-                    </div>
+                               placeholder="Apartment Number" style="margin-bottom:15px" required
+                               autofocus="autofocus"/>
 
+
+                    </div>
                     <div class="form-group">
-                        <label style="margin-bottom:10px">Zip Code</label>
-                        <input type="text" class="form-control" name="zipCode" th:field="${address.zipCode}"
+                        <label style="margin-bottom:10px;margin-right:150%">Zip Code</label>
+                        <input type="number" class="form-control" name="zipCode" th:field="${address.zipCode}"
                                placeholder="Zip Code"
-                               style="margin-bottom:15px" required autofocus = "autofocus"/>
+                               style="margin-bottom:15px" required autofocus="autofocus"/>
                     </div>
 
-                    <div class="box-footer" >
+                    <div class="box-footer">
                         <button type="submit" class="btn btn-success">Submit</button>
                     </div>
+
                 </form>
 
             </div>

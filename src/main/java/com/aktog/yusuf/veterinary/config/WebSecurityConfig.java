@@ -28,8 +28,6 @@ public class WebSecurityConfig   {
         return new BCryptPasswordEncoder();
     }
 
-
-
     public WebSecurityConfig(Environment env) {
         this.env = env;
 

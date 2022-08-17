@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/${api.version}")
 public class LoginController {
@@ -24,7 +26,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute("createLoginRequest") CreateLoginRequest createLoginRequest) {
+    public String login(@ModelAttribute @Valid CreateLoginRequest createLoginRequest) {
         return "redirect:/" + apiVersion + "/owner";
     }
 
