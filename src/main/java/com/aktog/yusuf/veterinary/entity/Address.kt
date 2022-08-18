@@ -17,6 +17,9 @@ data class Address @JvmOverloads constructor(
     val apartmentNumber: Int,
     val zipCode: Int,
 
+    @ManyToMany(mappedBy = "addresses")
+    val owners:Set<PetOwner>? = HashSet()
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

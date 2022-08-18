@@ -72,14 +72,16 @@ public class PetOwnerService {
         Authority authority = authorityRepository.findByName("ROLE_USER")
                 .orElse(authorityRepository.save(new Authority("ROLE_USER")));
 
+        Set<Authority> authorities = new HashSet<>(Optional.ofNullable(request.getAuthorities()).orElse(Set.of(authority)));
+        authorities.add(authority);
+
         PetOwner petOwner = new PetOwner(
                 request.getName(),
                 request.getSurname(),
                 request.getPhoneNumber(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                Set.of(authority)
-        );
+                authorities);
 
         return petOwnerDtoConverter.convert(petOwnerRepository.save(petOwner));
     }
@@ -125,20 +127,12 @@ public class PetOwnerService {
                 .collect(Collectors.toList());
     }
 
-    public void assignAuthorityToOwner(String ownerId, Authority authority) {
+    public PetOwnerDto assignAuthorityToOwner(String ownerId, Authority authority) {
 
         PetOwner owner = findByPetOwnerId(ownerId);
-        Set<Authority> authorities = owner.getAuthorities();
+        Set<Authority> authorities = new HashSet<>(owner.getAuthorities());
 
-        if (authorities.stream().map(Authority::getName).collect(Collectors.toList()).contains(authority.getName()))
-            return;
-
-        if (authorityRepository.findByName(authority.getName()).isEmpty()) {
-            authorityRepository.save(authority);
-        }
-
-
-        authorities.add(authorityRepository.findByName(authority.getName()).get());
+        authorities.add(authorityRepository.save(authority));
 
         PetOwner updatedOwner = new PetOwner(
                 ownerId,
@@ -152,14 +146,28 @@ public class PetOwnerService {
                 owner.getAddresses()
         );
 
-        petOwnerRepository.save(updatedOwner);
+        return petOwnerDtoConverter.convert(petOwnerRepository.save(updatedOwner));
 
     }
 
     public void removeAuthorityFromOwner(String ownerId, Authority authority) {
         PetOwner owner = findByPetOwnerId(ownerId);
+        Set<Authority> authorities = new HashSet<>(owner.getAuthorities());
 
+        authorities.remove(authorityRepository.findByName(authority.getName()).orElse(authority));
 
+        PetOwner updatedOwner = new PetOwner(
+                ownerId,
+                owner.getName(),
+                owner.getSurname(),
+                owner.getPhoneNumber(),
+                owner.getEmail(),
+                owner.getPassword(),
+                authorities,
+                owner.getPets(),
+                owner.getAddresses()
+        );
+        petOwnerRepository.save(updatedOwner);
     }
 
 }

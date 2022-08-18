@@ -50,6 +50,7 @@
                 <div class="form-group">
                     <label style="color:cyan"><span sec:authentication="name">Username</span></label>
                 </div>
+
             </div>
 
             <div sec:authorize="isAuthenticated()">
@@ -92,23 +93,29 @@
             <td th:text="${owner.authorities}"></td>
 
             <td>
-                <a class="btn btn-primary"
-                   th:href="@{/{version}/owner/update-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
-                   style="margin-right:5px">Edit</a>
+                <div style="display:block">
+                    <a class="btn btn-primary"
+                       th:href="@{/{version}/owner/update-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       style="margin-left:5px;margin-right:5px;display: inline-block; float: left">Edit</a>
 
-                <a class="btn btn-danger"
-                   th:href="@{/{version}/owner/delete-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
-                   th:if="${#authentication.getName() != owner.email}"
-                   style="margin-left:5px">Delete</a>
+                    <a class="btn btn-danger"
+                       th:href="@{/{version}/owner/delete-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       th:if="${#authentication.getName() != owner.email}"
+                       style="margin-left:5px;display: inline-block; float: left">Delete</a>
 
+                    <a class="btn btn-warning"
+                       sec:authorize="hasAuthority('ROLE_ADMIN')"
+                       th:href="@{/{version}/owner/remove-authority/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       style="margin-left:5px;margin-right:5px;display: inline-block; float: right">Remove Role</a>
 
-                <a class="btn btn-warning"
-                   sec:authorize="hasAuthority('ROLE_ADMIN')"
-                   th:href="@{/{version}/owner/assign-authority/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
-                   style="margin-left:5px">Assign Role</a>
+                    <a class="btn btn-warning"
+                       sec:authorize="hasAuthority('ROLE_ADMIN')"
+                       th:href="@{/{version}/owner/assign-authority/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       style="margin-right:5px;display: inline-block; float: right">Assign Role</a>
 
-
+                </div>
             </td>
+
         </tr>
         </tbody>
     </table>

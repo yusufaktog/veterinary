@@ -35,7 +35,7 @@ data class PetOwner @JvmOverloads constructor(
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val pets: Set<Pet>? = HashSet(),
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToMany(fetch = FetchType.LAZY,cascade = [CascadeType.ALL])
     @JoinTable(
         name = "owner_addresses",
         joinColumns = [JoinColumn(name = "owner_id", referencedColumnName = "owner_id")],

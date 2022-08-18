@@ -61,6 +61,7 @@ public class AddressService {
         );
 
         Set<Address> addresses = Optional.ofNullable(petOwner.getAddresses()).orElse(new HashSet<>());
+
         Address savedAddress = addressRepository.save(address);
         addresses.add(savedAddress);
 

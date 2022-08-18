@@ -9,6 +9,7 @@ import com.aktog.yusuf.veterinary.entity.Address;
 import com.aktog.yusuf.veterinary.entity.Authority;
 import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
@@ -24,7 +25,6 @@ public class TestDataGenerator {
     public static final String PET_ID = "pet_id";
     public static final String ADDRESS_ID = "address_id";
     public static final String ROLE = "ROLE_USER";
-    public static final Integer ROLE_ID = 1;
 
     public Pet generatePet(@Nullable String id) {
         return new Pet(
@@ -57,7 +57,7 @@ public class TestDataGenerator {
                 "phoneNumber",
                 "email",
                 "password",
-                Set.of(generateAuthority(ROLE_ID)),
+                Set.of(generateAuthority()),
                 Collections.emptySet(),
                 Collections.emptySet()
         );
@@ -70,7 +70,7 @@ public class TestDataGenerator {
                 "phoneNumber",
                 "email",
                 "password",
-                Set.of(generateAuthority(ROLE_ID))
+                Set.of(generateAuthority())
         );
     }
 
@@ -81,6 +81,18 @@ public class TestDataGenerator {
                 "surname",
                 "phoneNumber",
                 "email"
+        );
+    }
+    public PetOwnerDto generatePetOwnerDto(Authority authority) {
+        return new PetOwnerDto(
+                OWNER_ID,
+                "name",
+                "surname",
+                "phoneNumber",
+                "email",
+                Collections.emptySet(),
+                Collections.emptySet(),
+                Set.of(authority.getName())
         );
     }
 
@@ -137,7 +149,7 @@ public class TestDataGenerator {
                 "phoneNumber",
                 "email",
                 "password",
-                Set.of(generateAuthority(ROLE_ID)));
+                Set.of(generateAuthority()));
     }
 
     public UpdatePetOwnerRequest generateUpdatePetOwnerRequest() {
@@ -167,9 +179,8 @@ public class TestDataGenerator {
         );
     }
 
-    public Authority generateAuthority(@Nullable Integer id) {
+    public Authority generateAuthority() {
         return new Authority(
-                id,
                 "ROLE_USER"
         );
     }

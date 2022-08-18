@@ -2,7 +2,7 @@ package com.aktog.yusuf.veterinary.config;
 
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Authority;
-import com.aktog.yusuf.veterinary.entity.PetOwner;
+import com.aktog.yusuf.veterinary.repository.AuthorityRepository;
 import com.aktog.yusuf.veterinary.service.PetOwnerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -12,9 +12,11 @@ import java.util.Set;
 @Component
 public class DataLoader implements CommandLineRunner {
     private final PetOwnerService petOwnerService;
+    private final AuthorityRepository authorityRepository;
 
-    public DataLoader(PetOwnerService petOwnerService) {
+    public DataLoader(PetOwnerService petOwnerService, AuthorityRepository authorityRepository) {
         this.petOwnerService = petOwnerService;
+        this.authorityRepository = authorityRepository;
     }
 
 
@@ -25,13 +27,13 @@ public class DataLoader implements CommandLineRunner {
         String email = "admin@gmail.com";
 
         if (petOwnerService.findByEmail(email).isEmpty()) {
-            System.out.println("did not find any admin accounts so createing a new one");
+            Authority authority = authorityRepository.save(new Authority("ROLE_ADMIN"));
             CreatePetOwnerRequest admin = new CreatePetOwnerRequest("ADMIN",
                     "ADMIN",
                     "0000000000",
                     email,
                     "admin123",
-                    Set.of(new Authority("ROLE_ADMIN")));
+                    Set.of(authority));
             petOwnerService.createPetOwner(admin);
         }
 

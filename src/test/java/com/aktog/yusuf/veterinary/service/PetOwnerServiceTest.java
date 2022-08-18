@@ -82,7 +82,7 @@ public class PetOwnerServiceTest extends TestDataGenerator {
     void createPetOwner_itShouldReturnPetOwnerDto() {
         CreatePetOwnerRequest request = generateCreatePetOwnerRequest();
         PetOwner petOwner = generatePetOwner();
-        Authority authority = generateAuthority(ROLE_ID);
+        Authority authority = generateAuthority();
 
         PetOwnerDto expected = generatePetOwnerDto(OWNER_ID);
 
@@ -144,6 +144,19 @@ public class PetOwnerServiceTest extends TestDataGenerator {
 
         Mockito.verify(petOwnerRepository).findById(OWNER_ID);
         Mockito.verifyNoInteractions(petOwnerDtoConverter);
+    }
+
+    @Test
+    void testDeletePetOwner_whenPetOwnerIdExist_itShouldReturnString() {
+
+        String expected = "Pet Owner with id: " + OWNER_ID + " has been deleted";
+
+        Mockito.when(petOwnerRepository.findById(OWNER_ID)).thenReturn(Optional.of(generatePetOwner(OWNER_ID)));
+
+        String actual = petOwnerService.deletePetOwner(OWNER_ID);
+
+        assertEquals(expected, actual);
+        Mockito.verify(petOwnerRepository).findById(OWNER_ID);
     }
 
     @Test
@@ -249,6 +262,32 @@ public class PetOwnerServiceTest extends TestDataGenerator {
         Mockito.verify(petOwnerRepository, Mockito.atLeastOnce()).findAll();
         Mockito.verify(petOwnerDtoConverter).convert(testData);
 
+    }
+
+    @Test
+    void testAssignAuthorityToUser_whenOwnerIdNotExist_itShouldThrowEntityNotFoundException() {
+
+
+        Mockito.when(petOwnerRepository.findById(OWNER_ID)).thenThrow(EntityNotFoundException.class);
+
+        assertThrows(EntityNotFoundException.class, () -> petOwnerService.findByPetOwnerId(OWNER_ID));
+
+        Mockito.verify(petOwnerRepository).findById(OWNER_ID);
+        Mockito.verifyNoInteractions(authorityRepository);
+        Mockito.verifyNoInteractions(petOwnerDtoConverter);
+    }
+
+    @Test
+    void testRemoveAuthorityFromUser_whenOwnerIdNotExist_itShouldThrowEntityNotFoundException() {
+
+
+        Mockito.when(petOwnerRepository.findById(OWNER_ID)).thenThrow(EntityNotFoundException.class);
+
+        assertThrows(EntityNotFoundException.class, () -> petOwnerService.findByPetOwnerId(OWNER_ID));
+
+        Mockito.verify(petOwnerRepository).findById(OWNER_ID);
+        Mockito.verifyNoInteractions(authorityRepository);
+        Mockito.verifyNoInteractions(petOwnerDtoConverter);
     }
 
 }

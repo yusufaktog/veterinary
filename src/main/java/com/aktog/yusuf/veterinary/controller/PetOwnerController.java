@@ -58,16 +58,34 @@ public class PetOwnerController {
     }
 
     @GetMapping("/assign-authority/{ownerId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String getAssignAuthorityPage(@PathVariable String ownerId, Model model) {
         model.addAttribute("authority", new Authority());
         model.addAttribute("ownerId", ownerId);
         return "assign-authority";
     }
+
     @PostMapping("/assign-authority/{ownerId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String assignAuthority(@PathVariable String ownerId, @ModelAttribute @Valid Authority authority) {
         petOwnerService.assignAuthorityToOwner(ownerId, authority);
         return "redirect:/" + apiVersion + "/owner";
 
+    }
+
+
+    @GetMapping("/remove-authority/{ownerId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String getRemoveAuthorityPage(@PathVariable String ownerId, Model model) {
+        model.addAttribute("authority", new Authority());
+        model.addAttribute("ownerId", ownerId);
+        return "assign-authority";
+    }
+
+    @PostMapping("/remove-authority/{ownerId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String removeAuthority(@PathVariable String ownerId, @ModelAttribute @Valid Authority authority) {
+        petOwnerService.removeAuthorityFromOwner(ownerId, authority);
+        return "redirect:/" + apiVersion + "/owner";
     }
 }
