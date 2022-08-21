@@ -1,25 +1,23 @@
 package com.aktog.yusuf.veterinary.service;
 
-import com.aktog.yusuf.veterinary.dto.PetDto;
 import com.aktog.yusuf.veterinary.dto.PetOwnerDto;
 import com.aktog.yusuf.veterinary.dto.converter.PetOwnerDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Authority;
-import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.exception.EmailAlreadyExistsException;
 import com.aktog.yusuf.veterinary.exception.PhoneNumberAlreadyExistsException;
 import com.aktog.yusuf.veterinary.repository.AuthorityRepository;
 import com.aktog.yusuf.veterinary.repository.PetOwnerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,7 +93,7 @@ public class PetOwnerService {
                 request.getSurname(),
                 request.getPhoneNumber(),
                 request.getEmail(),
-                Optional.ofNullable(request.getPassword()).orElse(petOwner.getPassword()),
+                petOwner.getPassword(),
                 Optional.ofNullable(request.getAuthorities()).orElse(petOwner.getAuthorities()),
                 Optional.ofNullable(request.getPets()).orElse(petOwner.getPets()),
                 Optional.ofNullable(request.getAddresses()).orElse(petOwner.getAddresses())
@@ -152,6 +150,8 @@ public class PetOwnerService {
 
     public void removeAuthorityFromOwner(String ownerId, Authority authority) {
         PetOwner owner = findByPetOwnerId(ownerId);
+        authorityRepository.findByName(authority.getName())
+                .orElseThrow(() -> new EntityNotFoundException("Authority : " + authority.getName() + " could not found"));
         Set<Authority> authorities = new HashSet<>(owner.getAuthorities());
 
         authorities.remove(authorityRepository.findByName(authority.getName()).orElse(authority));

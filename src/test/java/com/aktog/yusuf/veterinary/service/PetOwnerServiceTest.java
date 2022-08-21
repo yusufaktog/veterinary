@@ -1,13 +1,11 @@
 package com.aktog.yusuf.veterinary.service;
 
 import com.aktog.yusuf.veterinary.TestDataGenerator;
-import com.aktog.yusuf.veterinary.dto.PetDto;
 import com.aktog.yusuf.veterinary.dto.PetOwnerDto;
 import com.aktog.yusuf.veterinary.dto.converter.PetOwnerDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Authority;
-import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.exception.EmailAlreadyExistsException;
 import com.aktog.yusuf.veterinary.exception.PhoneNumberAlreadyExistsException;
@@ -19,7 +17,6 @@ import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

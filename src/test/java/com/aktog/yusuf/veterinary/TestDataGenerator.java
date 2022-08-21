@@ -9,13 +9,11 @@ import com.aktog.yusuf.veterinary.entity.Address;
 import com.aktog.yusuf.veterinary.entity.Authority;
 import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class TestDataGenerator {
@@ -158,7 +156,6 @@ public class TestDataGenerator {
                 "surname",
                 "phoneNumber",
                 "email",
-                "password",
                 Collections.emptySet(),
                 Collections.emptySet(),
                 Collections.emptySet()

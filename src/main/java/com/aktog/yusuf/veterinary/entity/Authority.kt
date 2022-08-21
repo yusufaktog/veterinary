@@ -6,8 +6,8 @@ import javax.persistence.*
 data class Authority @JvmOverloads constructor(
     @Id
     @Column(name = "authority_id")
-    val name:String,
+    val name: String,
 
-    @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
-    val owners:Set<PetOwner>? = HashSet()
+    @ManyToMany(mappedBy="authorities", fetch = FetchType.LAZY)
+    val owners: Set<PetOwner>? = HashSet()
 )

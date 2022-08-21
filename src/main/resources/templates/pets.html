@@ -54,7 +54,7 @@
 
             <div sec:authorize="isAuthenticated()">
                 <form class="navbar-form"
-                      th:action="@{logout}"
+                      th:action="@{/{version}/logout (version = ${@environment.getProperty('api.version')})}"
                       method="POST">
                     <button class="btn btn-danger" type="submit">Log Out</button>
                 </form>

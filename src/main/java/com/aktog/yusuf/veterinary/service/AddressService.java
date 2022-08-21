@@ -42,6 +42,24 @@ public class AddressService {
         return addressDtoConverter.convert(findByAddressId(addressId));
     }
 
+    public void removeAddress(String addressId, String ownerId) {
+        findByAddressId(addressId);
+        addressRepository.deleteAddressFromOwnerAddresses(addressId, ownerId);
+    }
+
+    public void addAddress(String ownerId, String addressId) {
+        findByAddressId(addressId);
+        PetOwner owner = petOwnerService.findByPetOwnerId(ownerId);
+
+        if (!Optional.ofNullable(owner.getAddresses())
+                .orElse(new HashSet<>()).stream().map(Address::getId).
+                collect(Collectors.toList()).contains(addressId)) {
+
+            addressRepository.addAddressToOwner(ownerId, addressId);
+        }
+
+    }
+
     public String deleteAddressById(String addressId) {
         findByAddressId(addressId);
         addressRepository.deleteById(addressId);
@@ -70,11 +88,10 @@ public class AddressService {
                 petOwner.getSurname(),
                 petOwner.getPhoneNumber(),
                 petOwner.getEmail(),
-                petOwner.getPassword(),
                 petOwner.getPets(),
                 addresses,
                 petOwner.getAuthorities()
-                );
+        );
 
         petOwnerService.updatePetOwner(ownerId, updatePetOwnerRequest);
 
@@ -113,4 +130,6 @@ public class AddressService {
                         .contains(query.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
+
 }

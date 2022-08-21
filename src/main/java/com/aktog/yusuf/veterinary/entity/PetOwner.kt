@@ -1,10 +1,7 @@
 package com.aktog.yusuf.veterinary.entity
 
 import org.hibernate.annotations.GenericGenerator
-import org.hibernate.validator.constraints.Length
 import javax.persistence.*
-import javax.validation.constraints.Size
-import kotlin.math.min
 
 @Entity
 data class PetOwner @JvmOverloads constructor(
@@ -35,7 +32,7 @@ data class PetOwner @JvmOverloads constructor(
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val pets: Set<Pet>? = HashSet(),
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = [CascadeType.ALL])
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
         name = "owner_addresses",
         joinColumns = [JoinColumn(name = "owner_id", referencedColumnName = "owner_id")],

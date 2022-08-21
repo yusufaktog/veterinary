@@ -1,6 +1,5 @@
 package com.aktog.yusuf.veterinary.controller;
 
-import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Authority;
 import com.aktog.yusuf.veterinary.service.PetOwnerService;
@@ -8,11 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.OnError;
-import java.util.Collection;
 
 @Controller
 @RequestMapping("/${api.version}/owner")
@@ -40,12 +38,20 @@ public class PetOwnerController {
     @GetMapping("/update-owner/{id}")
     public String getUpdateOwnerForm(@PathVariable String id, Model model) {
         model.addAttribute("owner", petOwnerService.getPetOwnerById(id));
+        model.addAttribute("ownerId",id);
         return "update-owner";
     }
 
     @PutMapping("/update-owner/{id}")
     public String updateOwner(@PathVariable String id,
-                              @ModelAttribute @Valid UpdatePetOwnerRequest updatePetOwnerRequest) {
+                              @Valid @ModelAttribute("owner") UpdatePetOwnerRequest updatePetOwnerRequest,
+                              BindingResult result,
+                              Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("owner", updatePetOwnerRequest);
+            model.addAttribute("ownerId",id);
+            return "update-owner";
+        }
         petOwnerService.updatePetOwner(id, updatePetOwnerRequest);
         return "redirect:/" + apiVersion + "/owner";
     }
@@ -79,7 +85,7 @@ public class PetOwnerController {
     public String getRemoveAuthorityPage(@PathVariable String ownerId, Model model) {
         model.addAttribute("authority", new Authority());
         model.addAttribute("ownerId", ownerId);
-        return "assign-authority";
+        return "remove-authority";
     }
 
     @PostMapping("/remove-authority/{ownerId}")

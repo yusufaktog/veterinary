@@ -52,7 +52,7 @@
 
             <div sec:authorize="isAuthenticated()">
                 <form class="navbar-form"
-                      th:action="@{logout}"
+                      th:action="@{/{version}/logout (version = ${@environment.getProperty('api.version')})}"
                       method="POST">
                     <button class="btn btn-danger" type="submit">Log Out</button>
                 </form>
@@ -95,6 +95,12 @@
                 <a class="btn btn-primary"
                    th:href="@{/{version}/address/update-address/{id} (id=${address.id}, version = ${@environment.getProperty('api.version') })}"
                    style="margin-right:15px">Edit</a>
+                <a class="btn btn-primary"
+                   th:href="@{/{version}/address/add-address/{id} (id=${address.id}, version = ${@environment.getProperty('api.version') })}"
+                   style="margin-right:15px">Add Address</a>
+                <a class="btn btn-danger"
+                   th:href="@{/{version}/address/remove-address/{id} (id=${address.id}, version = ${@environment.getProperty('api.version') })}"
+                   style="margin-left:15px">Remove Address</a>
                 <a class="btn btn-danger"
                    th:href="@{/{version}/address/delete-address/{id} (id=${address.id}, version = ${@environment.getProperty('api.version') })}"
                    style="margin-left:15px">Delete</a>

@@ -50,23 +50,15 @@ public class AddressController {
         return "create-address";
     }
 
-    private void addCurrentUserIdToModel(Model model) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String id = petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
-        model.addAttribute("ownerId", id);
-    }
-
     @PostMapping("/create-address/{ownerId}")
     public String createAddress(@PathVariable String ownerId,
-                                @ModelAttribute @Valid CreateAddressRequest createAddressRequest,
+                                @ModelAttribute("address") @Valid CreateAddressRequest createAddressRequest,
                                 BindingResult result,
                                 Model model) {
 
         if (result.hasErrors()) {
-            result.getAllErrors().forEach(System.out::println);
-            addCurrentUserIdToModel(model);
             model.addAttribute("address", createAddressRequest);
-
+            addCurrentUserIdToModel(model);
             return "create-address";
         }
         addressService.createAddress(createAddressRequest, ownerId);
@@ -76,23 +68,57 @@ public class AddressController {
 
     @GetMapping("/update-address/{id}")
     public String getUpdateAddressForm(Model model, @PathVariable String id) {
+        model.addAttribute("addressId", id);
         model.addAttribute("address", addressService.getAddressById(id));
         return "update-address";
     }
 
     @PutMapping("update-address/{id}")
     public String updateAddress(@PathVariable String id,
-                                @Valid @ModelAttribute("updateAddressRequest") UpdateAddressRequest updateAddressRequest) {
+                                @Valid @ModelAttribute("address") UpdateAddressRequest updateAddressRequest,
+                                BindingResult result,
+                                Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("addressId", id);
+            model.addAttribute("address", updateAddressRequest);
+            return "update-address";
+        }
+
         addressService.updateAddress(id, updateAddressRequest);
         return "redirect:/" + apiVersion + "/address";
     }
 
     @GetMapping("delete-address/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-
     public String deleteAddress(@PathVariable String id) {
         addressService.deleteAddressById(id);
         return "redirect:/" + apiVersion + "/address";
+    }
+
+    @GetMapping("add-address/{id}")
+    public String addAddress(@PathVariable String id) {
+        String ownerId = getCurrentUserId();
+        addressService.addAddress(ownerId, id);
+        return "redirect:/" + apiVersion + "/address";
+    }
+
+    @GetMapping("remove-address/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String removeAddress(@PathVariable String id) {
+
+        String ownerId = getCurrentUserId();
+        addressService.removeAddress(id, ownerId);
+        return "redirect:/" + apiVersion + "/address";
+    }
+
+    private String getCurrentUserId() {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
+    }
+
+    private void addCurrentUserIdToModel(Model model) {
+        String id = getCurrentUserId();
+        model.addAttribute("ownerId", id);
     }
 
 }

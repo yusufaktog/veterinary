@@ -26,7 +26,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute @Valid CreateLoginRequest createLoginRequest) {
+    public String login(@ModelAttribute("owner") @Valid CreateLoginRequest createLoginRequest) {
+
         return "redirect:/" + apiVersion + "/owner";
     }
 

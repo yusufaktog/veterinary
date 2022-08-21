@@ -2,10 +2,7 @@ package com.aktog.yusuf.veterinary.entity
 
 import org.hibernate.annotations.GenericGenerator
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.Date
 import javax.persistence.*
-import javax.validation.constraints.Past
 
 @Entity
 data class Pet @JvmOverloads constructor(

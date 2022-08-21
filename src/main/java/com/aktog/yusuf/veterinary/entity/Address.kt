@@ -11,14 +11,19 @@ data class Address @JvmOverloads constructor(
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     val id: String? = "",
     val country: String,
+
     val city: String,
+
     val street: String,
+
     val buildingNumber: Int,
+
     val apartmentNumber: Int,
+
     val zipCode: Int,
 
     @ManyToMany(mappedBy = "addresses")
-    val owners:Set<PetOwner>? = HashSet()
+    val owners: Set<PetOwner>? = HashSet()
 
 ) {
     override fun equals(other: Any?): Boolean {

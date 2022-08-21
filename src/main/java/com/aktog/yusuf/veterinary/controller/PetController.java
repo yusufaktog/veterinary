@@ -44,19 +44,29 @@ public class PetController {
         return "pets";
     }
 
-    @GetMapping("/create-pet")
-    public String getCreatePetForm(Model model) {
+    private void addCurrentUserIdToModel(Model model) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("pet", new CreatePetRequest());
         String id = petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
         model.addAttribute("ownerId", id);
+    }
+
+    @GetMapping("/create-pet")
+    public String getCreatePetForm(Model model) {
+        addCurrentUserIdToModel(model);
+        model.addAttribute("pet", new CreatePetRequest());
         return "create-pet";
     }
 
     @PostMapping("/create-pet/{ownerId}")
     public String createPet(@PathVariable String ownerId,
-                            @Valid @ModelAttribute CreatePetRequest createPetRequest,
-                            BindingResult result) {
+                            @Valid @ModelAttribute("pet") CreatePetRequest createPetRequest,
+                            BindingResult result,
+                            Model model) {
+        if (result.hasErrors()) {
+            addCurrentUserIdToModel(model);
+            model.addAttribute("pet", createPetRequest);
+            return "create-pet";
+        }
         petService.createPet(ownerId, createPetRequest);
 
         return "redirect:/" + apiVersion + "/pet";
@@ -65,12 +75,21 @@ public class PetController {
     @GetMapping("update-pet/{id}")
     public String getUpdatePetForm(@PathVariable String id, Model model) {
         model.addAttribute("pet", petService.getPetById(id));
+        model.addAttribute("petId",id);
         return "update-pet";
     }
 
     @PutMapping("/update-pet/{id}")
     public String updatePet(@PathVariable String id,
-                            @ModelAttribute @Valid UpdatePetRequest updatePetRequest) {
+                            @ModelAttribute @Valid UpdatePetRequest updatePetRequest,
+                            BindingResult result,
+                            Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("pet", updatePetRequest);
+            model.addAttribute("petId",id);
+
+            return "update-pet";
+        }
         petService.updatePet(id, updatePetRequest);
         return "redirect:/" + apiVersion + "/pet";
 

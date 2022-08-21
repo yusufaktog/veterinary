@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error</title>
+    <script src="//use.fontawesome.com/84c9ca0cf8.js"></script>
+    <link
+            href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700"
+            rel="stylesheet">
+    <style type="text/css">
+@import url('//fonts.googleapis.com/css?family=Roboto');
+
+body {
+	background: #F7FAFC;
+	color: #65A5E1;
+	font: 16px/1.3 "Roboto", sans-serif;
+}
+
+header {
+	width: 100%;
+	margin: 0px auto;
+}
+
+h1 {
+	text-align: center;
+	color: #EC7433;
+	font: 100px/1 "Roboto";
+	text-transform: uppercase;
+	margin: 5% auto 5%;
+	margin-bottom: 35px;
+}
+
+article {
+	display: block;
+	text-align: center;
+	width: 650px;
+	margin: 10px auto;
+}
+
+a {
+	font-family: montserrat, sans-serif;
+	display: inline-block;
+	font-weight: 700;
+	text-decoration: none;
+	color: #fff;
+	text-transform: uppercase;
+	padding: 13px 23px;
+	background: #f57403;
+	font-size: 18px;
+	-webkit-transition: .2s all;
+	transition: .2s all;
+}
+
+a:hover {
+	color: #f57403;
+	border: 1px solid #f57403;
+	background: #ffffff;
+}
+
+@media screen and (max-width: 720px) {
+	article {
+		display: block;
+		text-align: center;
+		width: 450px;
+		margin: 0 auto;
+	}
+	h1 {
+		font: 70px/1 "Roboto";
+	}
+	.wrap {
+		margin-top: 50px;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	article {
+		display: block;
+		text-align: center;
+		width: 300px !important;
+		margin: 0 auto;
+	}
+	h1 {
+		font: 50px/1 "Roboto";
+	}
+	.wrap {
+		margin-top: 50px;
+	}
+}
+
+
+
+
+
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="wrap" style="margin-top: 250px;">
+    <article>
+        <header>
+            <h1 id="fittext1" th:text="${code}">
+            </h1>
+        </header>
+
+        <p id="fittext2"  th:text="${error.getMessage()}">
+
+
+        <h3 th:text="${code} == '403' ? 'You are not allowed to perform this operation...' : 'Not Found'"
+            style="margin:bottom:50px;color:red;font-size:20px"></h3>
+        <br> <a th:href="@{/{version}/owner (version = ${@environment.getProperty('api.version') })}">Back to
+        DashBoard</a>
+    </article>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script
+        src="//cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.js"></script>
+<script type="text/javascript">
+		$("#fittext1").fitText(1.1);
+		$("#fittext2").fitText(1.5);
+
+</script>
+</body>
+</html>
