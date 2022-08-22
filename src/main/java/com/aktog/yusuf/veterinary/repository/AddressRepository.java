@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Transactional
 public interface AddressRepository extends JpaRepository<Address, String> {
@@ -19,7 +18,7 @@ public interface AddressRepository extends JpaRepository<Address, String> {
     @Query(value = "INSERT INTO public.owner_addresses(owner_id, address_id) VALUES ( :ownerId, :addressId)", nativeQuery = true)
     void addAddressToOwner(@Param("ownerId") String ownerId, @Param("addressId") String addressId);
 
-    @Query(value = "SELECT owner_id,address_id FROM public.owner_addresses where owner_id = :ownerId", nativeQuery = true)
-    Optional<Object> getOwnerAddresses(@Param("ownerId") String ownerId);
+    @Query(value = "select EXISTS (SELECT FROM public.owner_addresses WHERE (address_id = :addressId))", nativeQuery = true)
+    boolean isAddressInUse(@Param("addressId") String addressId);
 
 }

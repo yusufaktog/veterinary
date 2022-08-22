@@ -8,6 +8,7 @@ import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,5 @@ public class PetOwnerDtoConverter {
     public List<PetOwnerDto> convert(List<PetOwner> from) {
         return from.stream().map(this::convert).collect(Collectors.toList());
     }
-
 
 }

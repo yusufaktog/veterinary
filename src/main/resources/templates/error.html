@@ -87,9 +87,6 @@ a:hover {
 }
 
 
-
-
-
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -97,17 +94,16 @@ a:hover {
 <div class="wrap" style="margin-top: 250px;">
     <article>
         <header>
-            <h1 id="fittext1" th:text="${code}">
-            </h1>
+            <h1 class="fittext1" th:text="${status.value()}"></h1>
+            <h1 th:text="${status.getReasonPhrase()}" style="font-size:75px"></h1>
+
         </header>
 
-        <p id="fittext2"  th:text="${error.getMessage()}">
+        <p id="fittext2" th:text="${exception.getMessage()}">
 
-
-        <h3 th:text="${code} == '403' ? 'You are not allowed to perform this operation...' : 'Not Found'"
-            style="margin:bottom:50px;color:red;font-size:20px"></h3>
-        <br> <a th:href="@{/{version}/owner (version = ${@environment.getProperty('api.version') })}">Back to
-        DashBoard</a>
+        <h3></h3>
+        <a th:href="@{/{version}/owner (version = ${@environment.getProperty('api.version') })}">Back to
+            DashBoard</a>
     </article>
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -116,6 +112,11 @@ a:hover {
 <script type="text/javascript">
 		$("#fittext1").fitText(1.1);
 		$("#fittext2").fitText(1.5);
+
+
+
+
+
 
 </script>
 </body>

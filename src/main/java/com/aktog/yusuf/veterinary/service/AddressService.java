@@ -8,10 +8,13 @@ import com.aktog.yusuf.veterinary.dto.request.update.UpdateAddressRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.entity.Address;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
+import com.aktog.yusuf.veterinary.exception.AddressInUseException;
 import com.aktog.yusuf.veterinary.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.xml.transform.Result;
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +64,13 @@ public class AddressService {
     }
 
     public String deleteAddressById(String addressId) {
+
         findByAddressId(addressId);
+
+        if(addressRepository.isAddressInUse(addressId)){
+            throw new AddressInUseException("Can not delete this address while there other users still use it");
+        }
+
         addressRepository.deleteById(addressId);
         return "Address id : " + addressId + " deleted";
     }

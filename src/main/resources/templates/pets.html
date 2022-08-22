@@ -93,7 +93,7 @@
             <td th:text="${pet.description}"></td>
             <td th:text="${pet.ownerName}"></td>
 
-            <td>
+            <td style="max-width:100%;white-space:nowrap;">
                 <a class="btn btn-primary"
                    th:href="@{/{version}/pet/update-pet/{id} (id=${pet.id},version = ${@environment.getProperty('api.version') } ) }"
                    style="margin-right:15px">Edit</a>

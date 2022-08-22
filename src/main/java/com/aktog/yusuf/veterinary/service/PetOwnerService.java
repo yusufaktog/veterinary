@@ -87,6 +87,15 @@ public class PetOwnerService {
     public PetOwnerDto updatePetOwner(String petOwnerId, UpdatePetOwnerRequest request) {
         PetOwner petOwner = findByPetOwnerId(petOwnerId);
 
+        if (petOwnerRepository.findByEmail(request.getEmail()).isPresent()
+                && ! petOwner.getEmail().equals(request.getEmail())) {
+            throw new EmailAlreadyExistsException("Given Email is already being used by another user");
+        }
+
+        if (petOwnerRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()
+                && ! petOwner.getPhoneNumber().equals(request.getPhoneNumber())) {
+            throw new PhoneNumberAlreadyExistsException("Given Phone Number is already being used by another user");
+        }
         PetOwner updatedPetOwner = new PetOwner(
                 petOwnerId,
                 request.getName(),
