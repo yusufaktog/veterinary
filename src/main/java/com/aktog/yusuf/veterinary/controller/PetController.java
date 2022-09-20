@@ -1,12 +1,14 @@
 package com.aktog.yusuf.veterinary.controller;
 
 
+import com.aktog.yusuf.veterinary.dto.PetDto;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetRequest;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.service.PetOwnerService;
 import com.aktog.yusuf.veterinary.service.PetService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -33,27 +35,20 @@ public class PetController {
     }
 
     @GetMapping
-    public String getPetList(Model model) {
-        model.addAttribute("pets", petService.getPetDtoList());
-        return "pets";
-    }
+    public String findPaginated(Model model,
+                                @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "q", defaultValue = "") String query) {
+        model.addAttribute("page", petService.findPaginated(pageNo, query));
+        model.addAttribute("query", query);
 
-    @GetMapping("/search")
-    public String filterPets(Model model, @RequestParam String query) {
-        model.addAttribute("pets", petService.doFilter(query));
         return "pets";
-    }
-
-    private void addCurrentUserIdToModel(Model model) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String id = petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
-        model.addAttribute("ownerId", id);
     }
 
     @GetMapping("/create-pet")
     public String getCreatePetForm(Model model) {
         addCurrentUserIdToModel(model);
         model.addAttribute("pet", new CreatePetRequest());
+
         return "create-pet";
     }
 
@@ -75,7 +70,8 @@ public class PetController {
     @GetMapping("update-pet/{id}")
     public String getUpdatePetForm(@PathVariable String id, Model model) {
         model.addAttribute("pet", petService.getPetById(id));
-        model.addAttribute("petId",id);
+        model.addAttribute("petId", id);
+
         return "update-pet";
     }
 
@@ -86,20 +82,29 @@ public class PetController {
                             Model model) {
         if (result.hasErrors()) {
             model.addAttribute("pet", updatePetRequest);
-            model.addAttribute("petId",id);
+            model.addAttribute("petId", id);
 
             return "update-pet";
         }
         petService.updatePet(id, updatePetRequest);
-        return "redirect:/" + apiVersion + "/pet";
 
+        return String.format("redirect:/%s/pet",apiVersion);
     }
 
     @GetMapping("/delete-pet/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String deletePet(@PathVariable String id) {
+    public String deletePet(@PathVariable String id,
+                            @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                            @RequestParam(name = "q", defaultValue = "", required = false) String query) {
         petService.deletePetById(id);
-        return "redirect:/" + apiVersion + "/pet";
+
+        return String.format("redirect:/%s/pet?p=%d&q=%s", apiVersion, pageNo + 1, query);
+    }
+
+    private void addCurrentUserIdToModel(Model model) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String id = petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
+        model.addAttribute("ownerId", id);
     }
 
 }

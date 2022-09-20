@@ -2,6 +2,7 @@ package com.aktog.yusuf.veterinary.entity
 
 import org.hibernate.annotations.GenericGenerator
 import java.time.LocalDate
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -21,13 +22,17 @@ data class Pet @JvmOverloads constructor(
     @JoinColumn(name = "owner_id")
     val owner: PetOwner,
 ) {
+
+    override fun toString(): String {
+        return "$name $birthDate $type $genus $description"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
         other as Pet
 
-        if (id != other.id) return false
         if (name != other.name) return false
         if (birthDate != other.birthDate) return false
         if (type != other.type) return false
@@ -38,8 +43,7 @@ data class Pet @JvmOverloads constructor(
     }
 
     override fun hashCode(): Int {
-        var result = id?.hashCode() ?: 0
-        result = 31 * result + name.hashCode()
+        var result = name.hashCode()
         result = 31 * result + birthDate.hashCode()
         result = 31 * result + type.hashCode()
         result = 31 * result + genus.hashCode()
@@ -47,8 +51,6 @@ data class Pet @JvmOverloads constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "Pet(id=$id, name='$name', birthDate=$birthDate, type='$type', genus='$genus', description='$description')"
-    }
+
 }
 

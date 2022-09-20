@@ -1,12 +1,14 @@
 package com.aktog.yusuf.veterinary.controller;
 
 
+import com.aktog.yusuf.veterinary.dto.AddressDto;
 import com.aktog.yusuf.veterinary.dto.request.create.CreateAddressRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdateAddressRequest;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.service.AddressService;
 import com.aktog.yusuf.veterinary.service.PetOwnerService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -32,14 +34,12 @@ public class AddressController {
     }
 
     @GetMapping
-    public String getAddressList(Model model) {
-        model.addAttribute("addresses", addressService.getAddressDtoList());
-        return "addresses";
-    }
+    public String findPaginated(Model model,
+                                @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "q", defaultValue = "", required = false) String query) {
+        model.addAttribute("page", addressService.findPaginated(pageNo, query));
+        model.addAttribute("query", query);
 
-    @GetMapping("/search")
-    public String filterAddresses(Model model, @RequestParam String query) {
-        model.addAttribute("addresses", addressService.doFilter(query));
         return "addresses";
     }
 
@@ -63,7 +63,8 @@ public class AddressController {
         }
         addressService.createAddress(createAddressRequest, ownerId);
 
-        return "redirect:/" + apiVersion + "/address";
+        return String.format("redirect:/%s/address", apiVersion);
+
     }
 
     @GetMapping("/update-address/{id}")
@@ -71,6 +72,14 @@ public class AddressController {
         model.addAttribute("addressId", id);
         model.addAttribute("address", addressService.getAddressById(id));
         return "update-address";
+    }
+
+    @GetMapping("add-address/{id}")
+    public String addAddress(@PathVariable String id) {
+        String ownerId = getCurrentUserId();
+        addressService.addAddress(ownerId, id);
+
+        return String.format("redirect:/%s/address", apiVersion);
     }
 
     @PutMapping("update-address/{id}")
@@ -85,34 +94,36 @@ public class AddressController {
         }
 
         addressService.updateAddress(id, updateAddressRequest);
-        return "redirect:/" + apiVersion + "/address";
+
+        return String.format("redirect:/%s/address", apiVersion);
     }
 
     @GetMapping("delete-address/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String deleteAddress(@PathVariable String id) {
-        addressService.deleteAddressById(id);
-        return "redirect:/" + apiVersion + "/address";
-    }
+    public String deleteAddress(@PathVariable String id,
+                                @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "q", defaultValue = "", required = false) String query) {
 
-    @GetMapping("add-address/{id}")
-    public String addAddress(@PathVariable String id) {
-        String ownerId = getCurrentUserId();
-        addressService.addAddress(ownerId, id);
-        return "redirect:/" + apiVersion + "/address";
+        addressService.deleteAddressById(id);
+
+        return String.format("redirect:/%s/address?p=%d&q=%s", apiVersion, pageNo + 1, query);
     }
 
     @GetMapping("remove-address/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String removeAddress(@PathVariable String id) {
+    public String removeAddress(@PathVariable String id,
+                                @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "q", defaultValue = "", required = false) String query) {
 
         String ownerId = getCurrentUserId();
         addressService.removeAddress(id, ownerId);
-        return "redirect:/" + apiVersion + "/address";
+
+        return String.format("redirect:/%s/address?p=%d&q=%s", apiVersion, pageNo + 1, query);
     }
 
     private String getCurrentUserId() {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return petOwnerService.findByEmail(currentUser.getUsername()).orElse(new PetOwner()).getId();
     }
 

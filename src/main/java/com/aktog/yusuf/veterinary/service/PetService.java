@@ -1,13 +1,19 @@
 package com.aktog.yusuf.veterinary.service;
 
 
+import com.aktog.yusuf.veterinary.dto.AddressDto;
 import com.aktog.yusuf.veterinary.dto.PetDto;
 import com.aktog.yusuf.veterinary.dto.converter.PetDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetRequest;
+import com.aktog.yusuf.veterinary.entity.Address;
 import com.aktog.yusuf.veterinary.entity.Pet;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.repository.PetRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -22,7 +28,8 @@ public class PetService {
     private final PetRepository petRepository;
 
     private final PetOwnerService petOwnerService;
-
+    @Value("${page.size}")
+    int pageSize;
     public PetService(PetDtoConverter petDtoConverter,
                       PetRepository petRepository,
                       PetOwnerService petOwnerService) {
@@ -34,6 +41,16 @@ public class PetService {
     public Pet findByPetId(String petId) {
         return petRepository.findById(petId)
                 .orElseThrow(() -> new EntityNotFoundException("Pet id : " + petId + " could not found"));
+    }
+    public Page<PetDto> findPaginated(int pageNo, String query) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Pet> pets = petRepository.findAllByNameIgnoreCaseOrTypeIgnoreCaseOrGenusIgnoreCaseOrDescriptionContaining(
+                query,
+                query,
+                query,
+                query,
+                pageable);
+        return petDtoConverter.convert(pets);
     }
 
     public PetDto getPetById(String petId) {
@@ -82,14 +99,4 @@ public class PetService {
         return petDtoConverter.convert(getPetList());
     }
 
-    public List<PetDto> doFilter(String query) {
-        return getPetDtoList()
-                .stream()
-                .filter(petDto -> petDto
-                        .toString()
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                .collect(Collectors.toList());
-
-    }
 }

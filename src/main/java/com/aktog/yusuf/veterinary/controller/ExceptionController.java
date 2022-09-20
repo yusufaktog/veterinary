@@ -73,4 +73,12 @@ public class ExceptionController {
 
         return "error";
     }
+    @ExceptionHandler(HttpClientErrorException.NotFound.class)
+    public String resourceNotFound(HttpClientErrorException.NotFound ex, Model model) {
+        model.addAttribute("exception", ex);
+        model.addAttribute("status", HttpStatus.NOT_FOUND);
+
+        return "error";
+    }
+
 }

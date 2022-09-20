@@ -1,15 +1,21 @@
 package com.aktog.yusuf.veterinary.service;
 
+import com.aktog.yusuf.veterinary.dto.AddressDto;
 import com.aktog.yusuf.veterinary.dto.PetOwnerDto;
 import com.aktog.yusuf.veterinary.dto.converter.PetOwnerDtoConverter;
 import com.aktog.yusuf.veterinary.dto.request.create.CreatePetOwnerRequest;
 import com.aktog.yusuf.veterinary.dto.request.update.UpdatePetOwnerRequest;
+import com.aktog.yusuf.veterinary.entity.Address;
 import com.aktog.yusuf.veterinary.entity.Authority;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.exception.EmailAlreadyExistsException;
 import com.aktog.yusuf.veterinary.exception.PhoneNumberAlreadyExistsException;
 import com.aktog.yusuf.veterinary.repository.AuthorityRepository;
 import com.aktog.yusuf.veterinary.repository.PetOwnerRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +33,8 @@ public class PetOwnerService {
     private final PetOwnerRepository petOwnerRepository;
     private final AuthorityRepository authorityRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
+    @Value("${page.size}")
+    int pageSize;
 
     public PetOwnerService(PetOwnerDtoConverter petOwnerDtoConverter,
                            PetOwnerRepository petOwnerRepository,
@@ -39,6 +46,7 @@ public class PetOwnerService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     public PetOwner findByPetOwnerId(String petOwnerId) {
         return petOwnerRepository.findById(petOwnerId)
                 .orElseThrow(() -> new EntityNotFoundException("Pet Owner id : " + petOwnerId + " could not found"));
@@ -46,6 +54,20 @@ public class PetOwnerService {
 
     public PetOwnerDto getPetOwnerById(String petOwnerId) {
         return petOwnerDtoConverter.convert(findByPetOwnerId(petOwnerId));
+    }
+
+    public Page<PetOwnerDto> findPaginated(int pageNo, String query) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        Page<PetOwner> owners = petOwnerRepository.
+                findAllByNameIgnoreCaseOrSurnameIgnoreCaseOrEmailOrPhoneNumberContaining(
+                        query,
+                        query,
+                        query,
+                        query,
+                        pageable);
+        return petOwnerDtoConverter.convert(owners);
+
     }
 
     public Optional<PetOwner> findByEmail(String email) {
@@ -88,12 +110,12 @@ public class PetOwnerService {
         PetOwner petOwner = findByPetOwnerId(petOwnerId);
 
         if (petOwnerRepository.findByEmail(request.getEmail()).isPresent()
-                && ! petOwner.getEmail().equals(request.getEmail())) {
+                && !petOwner.getEmail().equals(request.getEmail())) {
             throw new EmailAlreadyExistsException("Given Email is already being used by another user");
         }
 
         if (petOwnerRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()
-                && ! petOwner.getPhoneNumber().equals(request.getPhoneNumber())) {
+                && !petOwner.getPhoneNumber().equals(request.getPhoneNumber())) {
             throw new PhoneNumberAlreadyExistsException("Given Phone Number is already being used by another user");
         }
         PetOwner updatedPetOwner = new PetOwner(
@@ -179,4 +201,7 @@ public class PetOwnerService {
         petOwnerRepository.save(updatedOwner);
     }
 
+    public void clearAddresses(String ownerId) {
+        petOwnerRepository.clearAddresses(ownerId);
+    }
 }

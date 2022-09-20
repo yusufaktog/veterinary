@@ -23,27 +23,32 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link " aria-current="page"
-                       th:href="@{/{version}/pet (version = ${@environment.getProperty('api.version') } )}"
+                       th:href="@{/{version}/pet (version = ${@environment.getProperty('api.version') }, p = 1 , q = '')}"
                        style="margin-right:50px">Pets</a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link " aria-current="page"
-                       th:href="@{/{version}/owner (version = ${@environment.getProperty('api.version') } )}"
+                       th:href="@{/{version}/owner (version = ${@environment.getProperty('api.version') }, p = 1, q = '' )}"
                        style="margin-right:50px">Owners</a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page"
-                       th:href="@{/{version}/address (version = ${@environment.getProperty('api.version') } )}"
+                       th:href="@{/{version}/address (version = ${@environment.getProperty('api.version') }, p = 1, q = '')}"
                        style="margin-right:50px">Addresses</a>
                 </li>
 
             </ul>
-            <form class="d-flex" style="margin-right:5%"
-                  th:action="@{/{version}/owner/search (version = ${@environment.getProperty('api.version') } )  }">
-                <input class="form-control me-2" type="search" th:name="query" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+            <form class="d-flex" style="margin-right:5%">
+                <input class="form-control me-2" type="hidden" th:name="p" th:value="1" placeholder="Page"
+                       aria-label="Page">
+                <input class="form-control me-2" type="search" th:name="q" placeholder="Search" aria-label="Search">
+
+                <button class="btn btn-outline-success"
+                        th:action="@{/{version}/owner (version = ${@environment.getProperty('api.version') } )}"
+                        type="submit">Search
+                </button>
             </form>
 
             <div sec:authorize="isAuthenticated()" style="margin-right:5%">
@@ -84,7 +89,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="text-center" th:each="owner: ${owners}">
+        <tr class="text-center" th:each="owner: ${page.getContent()}">
             <td th:text="${owner.name}"></td>
             <td th:text="${owner.surname}"></td>
             <td style="max-width:100%;white-space:nowrap;">
@@ -103,31 +108,106 @@
             <td style="max-width:100%;white-space:nowrap;">
                 <div style="display:block">
                     <a class="btn btn-primary"
-                       th:href="@{/{version}/owner/update-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       th:href="@{/{version}/owner/update-owner/{id} (id=${owner.id},
+                        version = ${@environment.getProperty('api.version') })}"
                        style="margin-left:5px;margin-right:5px">Edit</a>
 
                     <a class="btn btn-danger"
-                       th:href="@{/{version}/owner/delete-owner/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       th:href="@{/{version}/owner/delete-owner/{id} (id=${owner.id},
+                       version = ${@environment.getProperty('api.version') }, p = ${page.getNumber()}, q = ${query} ) }"
                        th:if="${#authentication.getName() != owner.email}"
                        style="margin-left:5px;margin-right:5px">Delete</a>
 
                     <a class="btn btn-warning"
                        sec:authorize="hasAuthority('ROLE_ADMIN')"
-                       th:href="@{/{version}/owner/assign-authority/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       th:href="@{/{version}/owner/assign-authority/{id} (id=${owner.id},
+                        version = ${@environment.getProperty('api.version') })}"
                        style="margin-left:5px;margin-right:5px">Assign Role</a>
 
                     <a class="btn btn-warning"
                        sec:authorize="hasAuthority('ROLE_ADMIN')"
-                       th:href="@{/{version}/owner/remove-authority/{id} (id=${owner.id}, version = ${@environment.getProperty('api.version') })}"
+                       th:href="@{/{version}/owner/remove-authority/{id} (id=${owner.id},
+                        version = ${@environment.getProperty('api.version') })}"
                        style="margin-left:5px;margin-right:5px">Remove Role</a>
 
-
+                    <a class="btn btn-warning"
+                       sec:authorize="hasAuthority('ROLE_ADMIN')"
+                       th:href="@{/{version}/owner/clear-addresses/{id} (id=${owner.id},
+                        version = ${@environment.getProperty('api.version') })}"
+                       style="margin-left:5px;margin-right:5px">Clear Addresses</a>
                 </div>
             </td>
 
         </tr>
         </tbody>
     </table>
+
+    <!-- pagination -->
+
+    <nav aria-label="Pagination" th:if="${page.getTotalPages() > 1}">
+        <ul class="pagination justify-content-center font-weight-medium">
+            <li class="page-item" th:classappend="${page.getNumber() == 0} ? 'disabled'">
+                <a class="page-link svg-icon"
+                   th:href="@{/{version}/owner(p =  ${page.getNumber()  } ,
+                   version = ${@environment.getProperty('api.version') } , q = ${query} ) }"
+                   aria-label="Previous"
+                   title="Previous Page" rel="tooltip">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link svg-icon" th:href="@{/{version}/owner(p = 1,
+                   version = ${@environment.getProperty('api.version') } , q = ${query} ) }" style="font-weight:bold">
+                    First
+                </a>
+            </li>
+            <li class="page-item disabled" th:if="${page.getNumber() > 0}">
+                <a class="page-link svg-icon" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-three-dots">
+                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5
+                        0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                    </svg>
+                </a>
+            </li>
+            <li class="page-item"
+                th:classappend="${i == page.getNumber()  + 1 } ? 'active'"
+                th:each="i : ${#numbers.sequence( (page.getTotalPages() - 9 < page.getNumber() && page.getTotalPages() > 9)
+                ? page.getTotalPages() - 8
+                : page.getNumber()  + 1,
+
+                page.getTotalPages() > 9 + page.getNumber()
+                ? page.getNumber() + 9
+                : page.getTotalPages() )}">
+                <a class="page-link" th:href="@{/{version}/owner(p = ${i} ,
+                     version = ${@environment.getProperty('api.version') } , q = ${query} ) }" th:text="${i}"
+                   th:title="${'Page '+ i}"
+                   rel="tooltip"></a>
+            </li>
+            <li class="page-item disabled" th:if="${page.getNumber() + 10 < page.getTotalPages()}">
+                <a class="page-link svg-icon" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-three-dots">
+                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5
+                        0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                    </svg>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link svg-icon" th:href="@{/{version}/owner(p = ${page.getTotalPages() } ,
+                   version = ${@environment.getProperty('api.version') }, q = ${query} ) }" style="font-weight:bold">
+                    Last
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${page.getNumber() + 1 == page.getTotalPages()} ? 'disabled'">
+                <a class="page-link svg-icon" th:href="@{/{version}/owner(p = ${page.getNumber() + 2},
+                   version = ${@environment.getProperty('api.version') } , q = ${query} ) }"
+                   aria-label="Next"
+                   title="Next Page" rel="tooltip">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
 
 </div>
 </body>

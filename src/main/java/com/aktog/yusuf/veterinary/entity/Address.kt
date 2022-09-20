@@ -1,7 +1,9 @@
 package com.aktog.yusuf.veterinary.entity
 
 import org.hibernate.annotations.GenericGenerator
+import java.util.*
 import javax.persistence.*
+import kotlin.collections.HashSet
 
 @Entity
 data class Address @JvmOverloads constructor(
@@ -26,6 +28,8 @@ data class Address @JvmOverloads constructor(
     val owners: Set<PetOwner>? = HashSet()
 
 ) {
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

@@ -86,7 +86,6 @@ a:hover {
 	}
 }
 
-
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -95,11 +94,12 @@ a:hover {
     <article>
         <header>
             <h1 class="fittext1" th:text="${status.value()}"></h1>
-            <h1 th:text="${status.getReasonPhrase()}" style="font-size:75px"></h1>
+            <h1 th:text="${status.getReasonPhrase()}"
+                style="font-size:75px"></h1>
 
         </header>
 
-        <p id="fittext2" th:text="${exception.getMessage()}">
+        <p id="fittext2" th:text="${exception != null} ?  ${exception.getMessage()}">
 
         <h3></h3>
         <a th:href="@{/{version}/owner (version = ${@environment.getProperty('api.version') })}">Back to
@@ -112,11 +112,6 @@ a:hover {
 <script type="text/javascript">
 		$("#fittext1").fitText(1.1);
 		$("#fittext2").fitText(1.5);
-
-
-
-
-
 
 </script>
 </body>

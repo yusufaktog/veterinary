@@ -10,11 +10,14 @@ import com.aktog.yusuf.veterinary.entity.Address;
 import com.aktog.yusuf.veterinary.entity.PetOwner;
 import com.aktog.yusuf.veterinary.exception.AddressInUseException;
 import com.aktog.yusuf.veterinary.repository.AddressRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.xml.transform.Result;
-import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +39,9 @@ public class AddressService {
         this.petOwnerService = petOwnerService;
     }
 
+    @Value("${page.size}")
+    int pageSize;
+
     public Address findByAddressId(String addressId) {
         return addressRepository.findById(addressId)
                 .orElseThrow(() -> new EntityNotFoundException("Address id : " + addressId + " could not found"));
@@ -43,6 +49,19 @@ public class AddressService {
 
     public AddressDto getAddressById(String addressId) {
         return addressDtoConverter.convert(findByAddressId(addressId));
+    }
+
+    public Page<AddressDto> findPaginated(int pageNo, String query) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+        Page<Address> addresses = addressRepository.
+                findAllByCountryIgnoreCaseOrStreetIgnoreCaseOrCityIgnoreCaseContaining(
+                        query,
+                        query,
+                        query,
+                        pageable);
+        return addressDtoConverter.convert(addresses);
+
     }
 
     public void removeAddress(String addressId, String ownerId) {
@@ -67,15 +86,15 @@ public class AddressService {
 
         findByAddressId(addressId);
 
-        if(addressRepository.isAddressInUse(addressId)){
-            throw new AddressInUseException("Can not delete this address while there other users still use it");
+        if (addressRepository.isAddressInUse(addressId)) {
+            throw new AddressInUseException("Can not delete this address while there are other users still use it");
         }
 
         addressRepository.deleteById(addressId);
         return "Address id : " + addressId + " deleted";
     }
 
-    public AddressDto createAddress(CreateAddressRequest request, String ownerId) {
+    public void createAddress(CreateAddressRequest request, String ownerId) {
         PetOwner petOwner = petOwnerService.findByPetOwnerId(ownerId);
 
         Address address = new Address(
@@ -86,10 +105,10 @@ public class AddressService {
                 request.getApartmentNumber(),
                 request.getZipCode()
         );
+        Address savedAddress = addressRepository.save(address);
 
         Set<Address> addresses = Optional.ofNullable(petOwner.getAddresses()).orElse(new HashSet<>());
 
-        Address savedAddress = addressRepository.save(address);
         addresses.add(savedAddress);
 
         UpdatePetOwnerRequest updatePetOwnerRequest = new UpdatePetOwnerRequest(
@@ -104,7 +123,7 @@ public class AddressService {
 
         petOwnerService.updatePetOwner(ownerId, updatePetOwnerRequest);
 
-        return addressDtoConverter.convert(savedAddress);
+        addressDtoConverter.convert(address);
     }
 
     public AddressDto updateAddress(String addressId, UpdateAddressRequest request) {
@@ -129,16 +148,5 @@ public class AddressService {
     public List<AddressDto> getAddressDtoList() {
         return addressDtoConverter.convert(getAddressList());
     }
-
-    public List<AddressDto> doFilter(String query) {
-        return getAddressDtoList()
-                .stream()
-                .filter(addressDto -> addressDto
-                        .toString()
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                .collect(Collectors.toList());
-    }
-
 
 }

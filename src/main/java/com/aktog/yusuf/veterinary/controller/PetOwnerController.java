@@ -23,22 +23,22 @@ public class PetOwnerController {
         this.petOwnerService = petOwnerService;
     }
 
-    @GetMapping("/search")
-    public String filterPetOwners(Model model, @RequestParam String query) {
-        model.addAttribute("owners", petOwnerService.doFilter(query));
+    @GetMapping
+    public String findPaginated(Model model,
+                                @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "q", defaultValue = "") String query) {
+        model.addAttribute("page", petOwnerService.findPaginated(pageNo, query));
+        model.addAttribute("query", query);
+
         return "owners";
     }
 
-    @GetMapping
-    public String getPetOwnerList(Model model) {
-        model.addAttribute("owners", petOwnerService.getPetOwnerDtoList());
-        return "owners";
-    }
 
     @GetMapping("/update-owner/{id}")
     public String getUpdateOwnerForm(@PathVariable String id, Model model) {
         model.addAttribute("owner", petOwnerService.getPetOwnerById(id));
-        model.addAttribute("ownerId",id);
+        model.addAttribute("ownerId", id);
+
         return "update-owner";
     }
 
@@ -49,18 +49,23 @@ public class PetOwnerController {
                               Model model) {
         if (result.hasErrors()) {
             model.addAttribute("owner", updatePetOwnerRequest);
-            model.addAttribute("ownerId",id);
+            model.addAttribute("ownerId", id);
             return "update-owner";
         }
         petOwnerService.updatePetOwner(id, updatePetOwnerRequest);
-        return "redirect:/" + apiVersion + "/owner";
+
+        return String.format("redirect:/%s/owner", apiVersion);
     }
 
     @GetMapping("/delete-owner/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String deleteOwner(@PathVariable String id) {
+    public String deleteOwner(@PathVariable String id,
+                              @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
+                              @RequestParam(name = "q", defaultValue = "", required = false) String query) {
         petOwnerService.deletePetOwner(id);
-        return "redirect:/" + apiVersion + "/owner";
+
+        return String.format("redirect:/%s/owner?p=%d&q=%s", apiVersion, pageNo + 1, query);
+
     }
 
     @GetMapping("/assign-authority/{ownerId}")
@@ -68,6 +73,7 @@ public class PetOwnerController {
     public String getAssignAuthorityPage(@PathVariable String ownerId, Model model) {
         model.addAttribute("authority", new Authority());
         model.addAttribute("ownerId", ownerId);
+
         return "assign-authority";
     }
 
@@ -75,16 +81,24 @@ public class PetOwnerController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String assignAuthority(@PathVariable String ownerId, @ModelAttribute @Valid Authority authority) {
         petOwnerService.assignAuthorityToOwner(ownerId, authority);
-        return "redirect:/" + apiVersion + "/owner";
 
+        return String.format("redirect:/%s/owner", apiVersion);
     }
 
+    @GetMapping("/clear-addresses/{ownerId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String clearAddresses(@PathVariable String ownerId) {
+        petOwnerService.clearAddresses(ownerId);
+
+        return String.format("redirect:/%s/owner", apiVersion);
+    }
 
     @GetMapping("/remove-authority/{ownerId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String getRemoveAuthorityPage(@PathVariable String ownerId, Model model) {
         model.addAttribute("authority", new Authority());
         model.addAttribute("ownerId", ownerId);
+
         return "remove-authority";
     }
 
@@ -92,6 +106,7 @@ public class PetOwnerController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String removeAuthority(@PathVariable String ownerId, @ModelAttribute @Valid Authority authority) {
         petOwnerService.removeAuthorityFromOwner(ownerId, authority);
-        return "redirect:/" + apiVersion + "/owner";
+
+        return String.format("redirect:/%s/owner", apiVersion);
     }
 }

@@ -2,6 +2,7 @@ package com.aktog.yusuf.veterinary.dto.converter;
 
 import com.aktog.yusuf.veterinary.dto.AddressDto;
 import com.aktog.yusuf.veterinary.entity.Address;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,4 +27,9 @@ public class AddressDtoConverter {
     public List<AddressDto> convert(List<Address> from) {
         return from.stream().map(this::convert).collect(Collectors.toList());
     }
+
+    public Page<AddressDto> convert(Page<Address> from){
+        return from.map(this::convert);
+    }
+
 }
