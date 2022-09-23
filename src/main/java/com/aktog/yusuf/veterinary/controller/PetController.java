@@ -37,9 +37,13 @@ public class PetController {
     @GetMapping
     public String findPaginated(Model model,
                                 @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
-                                @RequestParam(name = "q", defaultValue = "") String query) {
-        model.addAttribute("page", petService.findPaginated(pageNo, query));
+                                @RequestParam(name = "q", defaultValue = "") String query,
+                                @RequestParam(name = "f", defaultValue = "name", required = false) String sortField,
+                                @RequestParam(name = "t", defaultValue = "3", required = false) Integer sortType) {
+        model.addAttribute("page", petService.findPaginated(pageNo, query, sortField, sortType));
         model.addAttribute("query", query);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortType", sortType);
 
         return "pets";
     }
@@ -88,7 +92,7 @@ public class PetController {
         }
         petService.updatePet(id, updatePetRequest);
 
-        return String.format("redirect:/%s/pet",apiVersion);
+        return String.format("redirect:/%s/pet", apiVersion);
     }
 
     @GetMapping("/delete-pet/{id}")

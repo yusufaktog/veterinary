@@ -36,10 +36,13 @@ public class AddressController {
     @GetMapping
     public String findPaginated(Model model,
                                 @RequestParam(name = "p", defaultValue = "1") Integer pageNo,
-                                @RequestParam(name = "q", defaultValue = "", required = false) String query) {
-        model.addAttribute("page", addressService.findPaginated(pageNo, query));
+                                @RequestParam(name = "q", defaultValue = "", required = false) String query,
+                                @RequestParam(name = "f", defaultValue = "country", required = false) String sortField,
+                                @RequestParam(name = "t", defaultValue = "3", required = false) Integer sortType) {
+        model.addAttribute("page", addressService.findPaginated(pageNo, query, sortField, sortType));
         model.addAttribute("query", query);
-
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortType", sortType);
         return "addresses";
     }
 

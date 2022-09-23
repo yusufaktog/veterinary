@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,8 +57,23 @@ public class PetOwnerService {
         return petOwnerDtoConverter.convert(findByPetOwnerId(petOwnerId));
     }
 
-    public Page<PetOwnerDto> findPaginated(int pageNo, String query) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+    public Page<PetOwnerDto> findPaginated(int pageNo, String query, String sortField, Integer sortType) {
+        Sort sort;
+
+        switch (sortType) {
+            case 1:
+                sort = Sort.by(sortField).ascending();
+                break;
+            case 2:
+                sort = Sort.by(sortField).descending();
+                break;
+            case 3:
+            default:
+                sort = Sort.unsorted();
+                break;
+        }
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         Page<PetOwner> owners = petOwnerRepository.
                 findAllByNameIgnoreCaseOrSurnameIgnoreCaseOrEmailOrPhoneNumberContaining(
