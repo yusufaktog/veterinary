@@ -36,7 +36,8 @@
 
             <li class="page-item" th:if="${page.getTotalPages() > 1}"
                 th:classappend="${i == page.getNumber()  + 1 } ? 'active'"
-                th:each="i : ${#numbers.sequence( (page.getTotalPages() - 9 < page.getNumber() && page.getTotalPages() > 9)
+                th:each="i : ${#numbers.sequence( (page.getTotalPages() - 9 < page.getNumber()
+                    && page.getTotalPages() > 9)
                     ? page.getTotalPages() - 8
                     : page.getNumber()  + 1,
 
@@ -108,17 +109,15 @@
 </div>
 
 <!--    search bar  -->
-<div th:fragment="search-bar(routeName)">
+<div th:fragment="search-bar">
     <form class="d-flex" style="margin-right:5%">
         <input class="form-control me-2" type="hidden" th:name="p" th:value="1" placeholder="Page"
                aria-label="Page">
-        <input class="form-control me-2" type="search" th:name="q" placeholder="Search" aria-label="Search">
 
-        <button class="btn btn-outline-success"
-                th:action="@{/{version}/{route} (version = ${@environment.getProperty('api.version')},
-                 route = ${routeName} ) }"
-                type="submit">Search
-        </button>
+        <input class="form-control me-2" type="search" th:name="q" placeholder="Search"
+               aria-label="Search">
+
+        <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 </div>
 
@@ -139,7 +138,8 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="" style="margin-left:2%;margin-right:50px">Veterinary App</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -168,7 +168,7 @@
 
                 </ul>
 
-                <div th:replace="fragments :: search-bar(routeName = 'address')"></div>
+                <div th:replace="fragments :: search-bar"></div>
 
                 <div sec:authorize="isAuthenticated()" style="margin-right:5%">
                     <div class="form-group">
@@ -181,6 +181,22 @@
             </div>
         </div>
     </nav>
+</div>
+
+<div th:fragment="column-title(columnName, routeName)">
+    <th>
+        <a th:href="@{/{version}/{route} (version = ${@environment.getProperty('api.version') } ,
+                q = ${query}, p = ${page.getNumber() + 1}, route = ${routeName},
+                f = ${#strings.toLowerCase(columnName)}, t = ${sortType == 3 ? 1 : sortType + 1} ) }"
+           th:text="${columnName}">
+
+        </a>
+        <div th:replace=" ${sortType == 1 &&
+            #strings.toLowerCase(columnName) == sortField} ? ~{fragments :: arrow_down} : ~{}"></div>
+
+        <div th:replace=" ${sortType == 2  &&
+            #strings.toLowerCase(columnName) == sortField} ? ~{fragments :: arrow_up} : ~{}"></div>
+    </th>
 </div>
 
 

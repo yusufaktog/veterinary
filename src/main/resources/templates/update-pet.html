@@ -16,30 +16,14 @@
         <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
             <h1 class=" text-center">Update Pet</h1>
             <div class="card-body">
-                <form action="#" th:action="@{{id} (id=${petId})}"
+                <form action="#"
+                      th:action="@{{id} (id=${petId})}"
                       th:object="${pet}" th:method="PUT">
 
                     <div class="form-group">
                         <label style="margin-bottom:10px">Name</label>
                         <input type="text" class="form-control" name="name" th:field="${pet.name}"
                                placeholder="Name"
-                               required autofocus="autofocus"
-                               style="margin-bottom:15px"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label style="margin-bottom:10px">Type</label>
-                        <input type="text" class="form-control" name="type" th:field="${pet.type}"
-                               placeholder="Type"
-                               required autofocus="autofocus"
-                               style="margin-bottom:15px"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label style="margin-bottom:10px">Genus</label>
-                        <input type="text" class="form-control" name="genus"
-                               th:field="${pet.genus}"
-                               placeholder="Genus"
                                required autofocus="autofocus"
                                style="margin-bottom:15px"/>
                     </div>

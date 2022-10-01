@@ -48,10 +48,10 @@ public class AddressService {
         return addressDtoConverter.convert(findByAddressId(addressId));
     }
 
-    public Page<AddressDto> findPaginated(int pageNo, String query,String sortField, Integer sortType) {
+    public Page<AddressDto> findPaginated(int pageNo, String query, String sortField, Integer sortType) {
         Sort sort;
 
-        switch (sortType){
+        switch (sortType) {
             case 1:
                 sort = Sort.by(sortField).ascending();
                 break;
@@ -67,11 +67,12 @@ public class AddressService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         Page<Address> addresses = addressRepository.
-                findAllByCountryIgnoreCaseOrStreetIgnoreCaseOrCityIgnoreCaseContaining(
+                findByCountryContainingIgnoreCaseOrCityContainingIgnoreCaseOrStreetContainingIgnoreCase(
                         query,
                         query,
                         query,
                         pageable);
+        System.out.printf("query was %s, found %d elements %n", query, addresses.getTotalElements());
 
         return addressDtoConverter.convert(addresses);
     }

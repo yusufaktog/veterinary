@@ -62,12 +62,13 @@ public class PetService {
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
-        Page<Pet> pets = petRepository.findAllByNameIgnoreCaseOrTypeIgnoreCaseOrGenusIgnoreCaseOrDescriptionContaining(
-                query,
-                query,
-                query,
-                query,
-                pageable);
+        Page<Pet> pets = petRepository.
+                findByNameContainingIgnoreCaseOrTypeContainingIgnoreCaseOrGenusContainingIgnoreCaseOrDescriptionContaining(
+                        query,
+                        query,
+                        query,
+                        query,
+                        pageable);
 
         return petDtoConverter.convert(pets);
     }

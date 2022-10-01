@@ -81,7 +81,7 @@ public class PetController {
 
     @PutMapping("/update-pet/{id}")
     public String updatePet(@PathVariable String id,
-                            @ModelAttribute @Valid UpdatePetRequest updatePetRequest,
+                            @Valid @ModelAttribute("pet") UpdatePetRequest updatePetRequest,
                             BindingResult result,
                             Model model) {
         if (result.hasErrors()) {

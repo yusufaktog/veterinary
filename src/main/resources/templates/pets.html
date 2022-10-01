@@ -26,25 +26,11 @@
     <table class="table table-hover table-striped table-bordered ">
         <thead class="table-light">
         <tr class="text-center">
-            <th>
-                <a th:href="@{/{version}/pet (version = ${@environment.getProperty('api.version') } ,
-                q = ${query}, p = ${page.getNumber() + 1},
-                f = name, t = ${sortType == 3 ? 1 : sortType + 1} ) }">Name</a>
-                <div th:replace=" ${sortType == 1} ? ~{fragments :: arrow_up} : ~{}"></div>
-                <div th:replace=" ${sortType == 2} ? ~{fragments :: arrow_down} : ~{}"></div>
-            </th>
-
-            <th>
-                <a th:href="@{/{version}/pet (version = ${@environment.getProperty('api.version') } ,
-                q = ${query}, p = ${page.getNumber() + 1},
-                f = birthDate, t = ${sortType == 3 ? 1 : sortType + 1} ) }">Age</a>
-                <div th:replace=" ${sortType == 1} ? ~{fragments :: arrow_up} : ~{}"></div>
-                <div th:replace=" ${sortType == 2} ? ~{fragments :: arrow_down} : ~{}"></div>
-            </th>
-
-            <th>Type</th>
-            <th>Genus</th>
-            <th>Description</th>
+            <div th:replace="fragments :: column-title(columnName = Name, routeName = pet)"></div>
+            <th>Age</th>
+            <div th:replace="fragments :: column-title(columnName = Type, routeName = pet)"></div>
+            <div th:replace="fragments :: column-title(columnName = Genus, routeName = pet)"></div>
+            <div th:replace="fragments :: column-title(columnName = Description, routeName = pet)"></div>
             <th>Owner</th>
             <th>Actions</th>
         </tr>

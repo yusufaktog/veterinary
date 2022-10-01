@@ -24,11 +24,10 @@ public interface AddressRepository extends JpaRepository<Address, String> {
     @Query(value = "SELECT EXISTS (SELECT FROM public.owner_addresses WHERE (address_id = :addressId))", nativeQuery = true)
     boolean isAddressInUse(@Param("addressId") String addressId);
 
-    Page<Address> findAllByCountryIgnoreCaseOrStreetIgnoreCaseOrCityIgnoreCaseContaining(
+    Page<Address> findByCountryContainingIgnoreCaseOrCityContainingIgnoreCaseOrStreetContainingIgnoreCase(
             String country,
-            String street,
             String city,
-            Pageable pageable
-    );
+            String street,
+            Pageable pageable);
 
 }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PetRepository extends JpaRepository<Pet, String> {
 
-    Page<Pet> findAllByNameIgnoreCaseOrTypeIgnoreCaseOrGenusIgnoreCaseOrDescriptionContaining(
+    Page<Pet> findByNameContainingIgnoreCaseOrTypeContainingIgnoreCaseOrGenusContainingIgnoreCaseOrDescriptionContaining(
             String name,
             String type,
             String genus,

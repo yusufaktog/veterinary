@@ -93,6 +93,7 @@ public class AddressController {
         if (result.hasErrors()) {
             model.addAttribute("addressId", id);
             model.addAttribute("address", updateAddressRequest);
+
             return "update-address";
         }
 

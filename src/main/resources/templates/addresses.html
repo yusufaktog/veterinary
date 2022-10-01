@@ -41,15 +41,10 @@
     <table class="table table-hover table-striped table-bordered ">
         <thead class="table-light">
         <tr class="text-center">
-            <th>
-                <a th:href="@{/{version}/address (version = ${@environment.getProperty('api.version') } ,
-                q = ${query}, p = ${page.getNumber() + 1},
-                f = country, t = ${sortType == 3 ? 1 : sortType + 1} ) }">Country</a>
-                <div th:replace=" ${sortType == 1} ? ~{fragments :: arrow_up} : ~{}"></div>
-                <div th:replace=" ${sortType == 2} ? ~{fragments :: arrow_down} : ~{}"></div>
-            </th>
-            <th>City</th>
-            <th>Street</th>
+
+            <div th:replace="fragments :: column-title(columnName = Country, routeName = address)"></div>
+            <div th:replace="fragments :: column-title(columnName = City, routeName = address)"></div>
+            <div th:replace="fragments :: column-title(columnName = Street, routeName = address)"></div>
             <th>Building Number</th>
             <th>Apartment Number</th>
             <th>Zip Code</th>
