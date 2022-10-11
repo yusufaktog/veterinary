@@ -114,7 +114,7 @@
         <input class="form-control me-2" type="hidden" th:name="p" th:value="1" placeholder="Page"
                aria-label="Page">
 
-        <input class="form-control me-2" type="search" th:name="q" placeholder="Search"
+        <input class="form-control me-2" type="search" th:name="q" placeholder="Search For Anything..."
                aria-label="Search">
 
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -184,18 +184,19 @@
 </div>
 
 <div th:fragment="column-title(columnName, routeName)">
+
     <th>
         <a th:href="@{/{version}/{route} (version = ${@environment.getProperty('api.version') } ,
                 q = ${query}, p = ${page.getNumber() + 1}, route = ${routeName},
-                f = ${#strings.toLowerCase(columnName)}, t = ${sortType == 3 ? 1 : sortType + 1} ) }"
-           th:text="${columnName}">
+                f = ${#strings.unCapitalize(columnName)}, t = ${sortType == 3 ? 1 : sortType + 1} ) }"
+           th:text="${columnName }">
 
         </a>
         <div th:replace=" ${sortType == 1 &&
-            #strings.toLowerCase(columnName) == sortField} ? ~{fragments :: arrow_down} : ~{}"></div>
+            #strings.unCapitalize(columnName)  == sortField} ? ~{fragments :: arrow_down} : ~{}"></div>
 
         <div th:replace=" ${sortType == 2  &&
-            #strings.toLowerCase(columnName) == sortField} ? ~{fragments :: arrow_up} : ~{}"></div>
+           #strings.unCapitalize(columnName) == sortField} ? ~{fragments :: arrow_up} : ~{}"></div>
     </th>
 </div>
 

@@ -24,7 +24,7 @@ public interface AddressRepository extends JpaRepository<Address, String> {
     @Query(value = "SELECT EXISTS (SELECT FROM public.owner_addresses WHERE (address_id = :addressId))", nativeQuery = true)
     boolean isAddressInUse(@Param("addressId") String addressId);
 
-    Page<Address> findByCountryContainingIgnoreCaseOrCityContainingIgnoreCaseOrStreetContainingIgnoreCase(
+    Page<Address> findByCountryContainsOrCityContainsOrStreetContainsAllIgnoreCase(
             String country,
             String city,
             String street,

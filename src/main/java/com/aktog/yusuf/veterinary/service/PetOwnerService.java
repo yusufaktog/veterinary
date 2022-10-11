@@ -76,7 +76,7 @@ public class PetOwnerService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         Page<PetOwner> owners = petOwnerRepository.
-                findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCaseOrEmailContainingOrPhoneNumberContaining(
+                findByNameContainsOrSurnameContainsOrEmailContainsOrPhoneNumberContainsAllIgnoreCase(
                         query,
                         query,
                         query,

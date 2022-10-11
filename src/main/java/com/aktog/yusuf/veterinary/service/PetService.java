@@ -62,8 +62,9 @@ public class PetService {
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
-        Page<Pet> pets = petRepository.
-                findByNameContainingIgnoreCaseOrTypeContainingIgnoreCaseOrGenusContainingIgnoreCaseOrDescriptionContaining(
+        Page<Pet> pets = petRepository
+                .findByNameContainsOrTypeContainsOrGenusContainsOrOwnerNameContainsOrOwnerSurnameContainsAllIgnoreCase(
+                        query,
                         query,
                         query,
                         query,

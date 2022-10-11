@@ -67,12 +67,11 @@ public class AddressService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
 
         Page<Address> addresses = addressRepository.
-                findByCountryContainingIgnoreCaseOrCityContainingIgnoreCaseOrStreetContainingIgnoreCase(
+                findByCountryContainsOrCityContainsOrStreetContainsAllIgnoreCase(
                         query,
                         query,
                         query,
                         pageable);
-        System.out.printf("query was %s, found %d elements %n", query, addresses.getTotalElements());
 
         return addressDtoConverter.convert(addresses);
     }

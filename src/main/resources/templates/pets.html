@@ -27,7 +27,7 @@
         <thead class="table-light">
         <tr class="text-center">
             <div th:replace="fragments :: column-title(columnName = Name, routeName = pet)"></div>
-            <th>Age</th>
+            <div th:replace="fragments :: column-title(columnName = BirthDate, routeName = pet)"></div>
             <div th:replace="fragments :: column-title(columnName = Type, routeName = pet)"></div>
             <div th:replace="fragments :: column-title(columnName = Genus, routeName = pet)"></div>
             <div th:replace="fragments :: column-title(columnName = Description, routeName = pet)"></div>

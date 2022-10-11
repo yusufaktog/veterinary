@@ -21,7 +21,7 @@ public interface PetOwnerRepository extends JpaRepository<PetOwner, String> {
     @Query(value = "DELETE FROM public.owner_addresses WHERE owner_id =  :ownerId", nativeQuery = true)
     void clearAddresses(String ownerId);
 
-    Page<PetOwner> findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCaseOrEmailContainingOrPhoneNumberContaining(
+    Page<PetOwner> findByNameContainsOrSurnameContainsOrEmailContainsOrPhoneNumberContainsAllIgnoreCase(
             String name,
             String surname,
             String email,
