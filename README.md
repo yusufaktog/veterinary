@@ -124,13 +124,3 @@ $ mvn clean install
 $ mvn spring-boot:run
 ```
 
----
-#### Or Visit the app deployed to public Heroku server
-
----
-
-
-The app is also available on the heroku, can be visited from
-(First run may take a while because Heroku puts app to sleep after 30 minutes of inactivity.)
-
-[veterinary-thymeleaf](https://veterinary-thymeleaf.herokuapp.com/```application.properties.version```/login)
